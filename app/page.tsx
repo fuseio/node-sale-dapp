@@ -1,7 +1,10 @@
 import PublicSaleForm from "@/components/PublicSaleForm";
 import Topbar from "@/components/Topbar";
 import { Tier, TierStatus } from "@/lib/types";
+import Image from "next/image";
 import Link from "next/link";
+import ember from "@/assets/ember.svg";
+import checkmarkBg from "@/assets/checkmark-bg.svg";
 
 const tiers: Tier[] = [
   {
@@ -35,6 +38,17 @@ const tiers: Tier[] = [
 
 const sellingTier = tiers.filter((tier) => tier.status === TierStatus.Selling)[0];
 
+const whys = [
+  "A step in the evolution of Fuse Network towards launching the new Ember mainnet"
+]
+
+const advantages = [
+  "Node Rewards - 20% of token supply Rewards is distributed over the frst 24 months after mainnet launch",
+  "Node owners get access to the Data Availability Committee",
+  "Participate in governance",
+  "Node ownership ofers potential additional airdrops"
+]
+
 export default function Home() {
   return (
     <div className="w-full font-mona min-h-screen">
@@ -58,7 +72,86 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <section className="mt-24" id="public-sale">
+        <section>
+          <div className="px-10 py-24">
+            <div className="w-full max-w-7xl m-auto relative bg-dune rounded-[1.25rem] flex p-16">
+              <div className="flex flex-col gap-16 text-white">
+                <h2 className="text-5xl font-semibold leading-none text-success">
+                  Sale in Progress
+                </h2>
+                <div className="flex gap-40">
+                  <div className="flex flex-col">
+                    <p>
+                      Sold licenses
+                    </p>
+                    <p className="text-6xl leading-none font-semibold">
+                      35
+                    </p>
+                  </div>
+                  <div className="flex flex-col">
+                    <p>
+                      Current license price
+                    </p>
+                    <p className="text-6xl leading-none font-semibold">
+                      {new Intl.NumberFormat().format(sellingTier.price)} FUSE
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute -top-24 right-24">
+                <Image
+                  src={ember}
+                  alt="ember"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="about">
+          <div className="px-10 py-24">
+            <div className="w-full max-w-7xl m-auto flex justify-between gap-14">
+              <h2 className="text-5xl font-semibold max-w-80">
+                Why a Node Sale?
+              </h2>
+              <div className="flex flex-col gap-6">
+                {whys.map((why, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <Image
+                      src={checkmarkBg}
+                      alt="checkmark background"
+                    />
+                    <p className="text-2xl max-w-[45rem]">
+                      {why}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div className="px-10 py-24">
+            <div className="w-full max-w-7xl m-auto flex justify-between gap-14">
+              <h2 className="text-5xl font-semibold max-w-80">
+                Advantages of Owning Fuse Network Nodes
+              </h2>
+              <div className="flex flex-col gap-6">
+                {advantages.map((advantage, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <Image
+                      src={checkmarkBg}
+                      alt="checkmark background"
+                    />
+                    <p className="text-2xl max-w-[45rem]">
+                      {advantage}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="public-sale">
           <div className="px-10 py-24">
             <div className="w-full max-w-7xl m-auto flex flex-col gap-10">
               <h2 className="text-5xl font-semibold text-center">

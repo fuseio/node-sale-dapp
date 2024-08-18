@@ -20,6 +20,7 @@ const config: Config = {
       colors: {
         tertiary: "#F3F3F3",
         success: "#B4F9BA",
+        "dune": "#333333",
         "light-gray": "#D9D9D9",
         "ironside-gray": "#666666",
         "fresh-green": "#6ED677",
