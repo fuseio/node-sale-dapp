@@ -4,23 +4,25 @@ import fuseLogo from "@/assets/fuse-logo.svg";
 import NavMenu from "./NavMenu";
 import NavButton from "./NavButton";
 import Image from "next/image";
+import { MenuItems } from "@/lib/types";
 
-const menu = [
+const menu: MenuItems = [
   {
-    title: "Go",
+    title: "About",
+    link: "#about",
+  },
+  {
+    title: "Public Sale",
+    link: "#public-sale",
+  },
+  {
+    title: "FAQs",
     link: "#",
   },
   {
-    title: "Developers",
-    link: "#",
-  },
-  {
-    title: "Ecosystem",
-    link: "#",
-  },
-  {
-    title: "Company",
-    link: "#",
+    title: "Docs",
+    link: "https://docs.fuse.io/",
+    isNewTab: true,
   },
 ]
 
