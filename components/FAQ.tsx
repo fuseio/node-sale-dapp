@@ -8,7 +8,7 @@ type FAQProps = {
 
 const FAQ = ({ questions, answers }: FAQProps) => {
   return (
-    <section>
+    <section id="faq">
       <div className="px-10 py-24 md:px-4 md:py-12">
         <div className="w-full max-w-7xl m-auto flex md:flex-col">
           <div className="w-2/5 md:w-full">

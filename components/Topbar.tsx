@@ -17,7 +17,7 @@ const menu: MenuItems = [
   },
   {
     title: "FAQs",
-    link: "#",
+    link: "#faq",
   },
   {
     title: "Docs",
