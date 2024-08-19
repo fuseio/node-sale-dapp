@@ -4,8 +4,10 @@ import { Tier, TierStatus } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
 import ember from "@/assets/ember.svg";
+import checkmarkBg from "@/assets/checkmark-bg.svg";
 import Footer from "@/components/Footer";
 import List from "@/components/List";
+import FAQ from "@/components/FAQ";
 
 const tiers: Tier[] = [
   {
@@ -48,6 +50,42 @@ const advantages = [
   "Node owners get access to the Data Availability Committee",
   "Participate in governance",
   "Node ownership ofers potential additional airdrops"
+]
+
+const conditions = [
+  {
+    title: "Early birds get the best price",
+    points: [
+      "5 tiers",
+      "Star price - 120,00 FUSE"
+    ]
+  },
+  {
+    title: "Nodes for sale at 500—exclusive to licensed operators."
+  },
+  {
+    title: "FUSE tokens from sale will be burned"
+  }
+]
+
+const questions = [
+  "What are Fuse Nodes?",
+  "What are Fuse Nodes?",
+  "What are Fuse Nodes?",
+  "What are Fuse Nodes?",
+  "What are Fuse Nodes?",
+  "What are Fuse Nodes?",
+  "What are Fuse Nodes?",
+]
+
+const answers = [
+  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
+  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
+  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
+  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
+  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
+  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
+  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
 ]
 
 export default function Home() {
@@ -110,6 +148,36 @@ export default function Home() {
           </div>
         </section>
         <List id="about" title="What is Node Sale?" items={whys} />
+        <section className="bg-tertiary">
+          <div className="px-10 py-24 md:px-4 md:py-12">
+            <div className="w-full max-w-7xl m-auto flex flex-col justify-between gap-16 md:gap-10">
+              <h2 className="text-[2.5rem] md:text-[2rem] font-semibold text-center">
+                What are the Node Sale Conditions?
+              </h2>
+              <div className="grid grid-cols-3 md:grid-cols-2 gap-10 md:gap-4">
+                {conditions.map((condition, i) => (
+                  <div key={i} className="bg-white rounded-[1.25rem] md:rounded-xl flex flex-col gap-4 px-9 py-6 md:px-4 md:py-5 min-h-64 md:min-h-40">
+                    <Image
+                      src={checkmarkBg}
+                      alt="checkmark background"
+                      className="md:w-4 md:h-4"
+                    />
+                    <p className="text-2xl md:text-sm">
+                      {condition.title}
+                    </p>
+                    <ul className="list-disc list-inside text-ironside-gray md:text-xs">
+                      {condition.points?.map((point, i) => (
+                        <li key={i}>
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
         <List id="advantages" title="Advantages of Owning Fuse Network Nodes" items={advantages} />
         <section id="public-sale">
           <div className="px-10 py-24 md:px-4 md:py-12">
@@ -181,6 +249,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+        <FAQ questions={questions} answers={answers} />
       </main>
       <Footer />
     </div>
