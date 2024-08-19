@@ -20,11 +20,11 @@ const NavMenu = ({
 
   return (
     <div className={`${className} block ${isOpen ? "md:block" : "md:hidden"}`}>
-      <ul className="flex flex-row items-center lg:items-start gap-2 p-0 lg:p-4 mt-0 text-black font-medium text-base/4 lg:flex-col">
+      <ul className="flex flex-row items-center lg:items-start gap-2 p-0 lg:p-4 mt-0 text-black md:text-white font-medium text-base/4 lg:flex-col">
         {menuItems.map((item, index) => (
           <div
             key={index}
-            className={`flex justify-center items-center rounded-full h-9 hover:bg-tertiary lg:w-full lg:justify-start ${liClassName} ${(item.title.toLowerCase() === selected ? "bg-tertiary py-2.5 px-4 pointer-events-none" : "cursor-pointer group")}`}
+            className={`flex justify-center items-center rounded-full h-9 hover:bg-tertiary hover:text-black lg:w-full lg:justify-start ${liClassName} ${(item.title.toLowerCase() === selected ? "bg-tertiary text-black py-2.5 px-4 pointer-events-none" : "cursor-pointer group")}`}
             aria-current={
               item.title.toLowerCase() === selected
                 ? "page"

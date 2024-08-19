@@ -4,7 +4,8 @@ import { Tier, TierStatus } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
 import ember from "@/assets/ember.svg";
-import checkmarkBg from "@/assets/checkmark-bg.svg";
+import Footer from "@/components/Footer";
+import List from "@/components/List";
 
 const tiers: Tier[] = [
   {
@@ -54,37 +55,37 @@ export default function Home() {
     <div className="w-full font-mona min-h-screen">
       <Topbar />
       <main>
-        <section className="mt-24">
-          <div className="px-10 py-24">
-            <div className="w-full max-w-7xl m-auto flex flex-col items-center gap-8">
-              <h1 className="text-[4.375rem] leading-none font-semibold">
+        <section className="mt-24 md:mt-0">
+          <div className="px-10 py-24 md:px-4 md:py-12">
+            <div className="w-full max-w-7xl m-auto flex flex-col items-center gap-8 text-center">
+              <h1 className="text-[4.375rem] md:text-5xl leading-none font-semibold">
                 Fuse L2 Node Sale
               </h1>
-              <p className="text-xl leading-none text-ironside-gray">
+              <p className="text-xl md:text-lg leading-none text-ironside-gray">
                 Buy a Fuse Network Node License NFT and Earn FUSE
               </p>
               <Link
                 href="#public-sale"
-                className="transition ease-in-out min-w-[14.625rem] p-4 flex justify-center items-center gap-2 bg-success border border-success rounded-full text-xl leading-none text-black font-semibold hover:bg-transparent hover:border-black"
+                className="transition ease-in-out min-w-[14.625rem] md:w-full p-4 md:p-3 flex justify-center items-center gap-2 bg-success border border-success rounded-full text-xl md:text-lg leading-none text-black font-semibold hover:bg-transparent hover:border-black"
               >
                 Buy Node
               </Link>
             </div>
           </div>
         </section>
-        <section>
-          <div className="px-10 py-24">
-            <div className="w-full max-w-7xl m-auto relative bg-dune rounded-[1.25rem] flex p-16">
-              <div className="flex flex-col gap-16 text-white">
-                <h2 className="text-5xl font-semibold leading-none text-success">
+        <section className="md:bg-dune md:my-12">
+          <div className="px-10 py-24 md:px-4 md:py-0">
+            <div className="w-full max-w-7xl m-auto relative bg-dune rounded-[1.25rem] flex md:flex-col md:items-center md:text-center md:gap-10 p-16 md:px-5 md:py-10">
+              <div className="flex flex-col gap-16 md:gap-10 text-white">
+                <h2 className="text-[2.5rem] md:text-[2rem] font-semibold leading-none text-success">
                   Sale in Progress
                 </h2>
-                <div className="flex gap-40">
+                <div className="flex md:flex-col gap-40 md:gap-6">
                   <div className="flex flex-col">
                     <p>
                       Sold licenses
                     </p>
-                    <p className="text-6xl leading-none font-semibold">
+                    <p className="text-6xl md:text-[2.813rem] leading-none font-semibold">
                       35
                     </p>
                   </div>
@@ -92,84 +93,43 @@ export default function Home() {
                     <p>
                       Current license price
                     </p>
-                    <p className="text-6xl leading-none font-semibold">
+                    <p className="text-6xl md:text-[2.813rem] leading-none font-semibold">
                       {new Intl.NumberFormat().format(sellingTier.price)} FUSE
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="absolute -top-24 right-24">
+              <div className="absolute md:static -top-24 right-24">
                 <Image
                   src={ember}
                   alt="ember"
+                  className="md:w-[13.375rem] md:h-[15.625rem]"
                 />
               </div>
             </div>
           </div>
         </section>
-        <section id="about">
-          <div className="px-10 py-24">
-            <div className="w-full max-w-7xl m-auto flex justify-between gap-14">
-              <h2 className="text-5xl font-semibold max-w-80">
-                Why a Node Sale?
-              </h2>
-              <div className="flex flex-col gap-6">
-                {whys.map((why, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <Image
-                      src={checkmarkBg}
-                      alt="checkmark background"
-                    />
-                    <p className="text-2xl max-w-[45rem]">
-                      {why}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-        <section>
-          <div className="px-10 py-24">
-            <div className="w-full max-w-7xl m-auto flex justify-between gap-14">
-              <h2 className="text-5xl font-semibold max-w-80">
-                Advantages of Owning Fuse Network Nodes
-              </h2>
-              <div className="flex flex-col gap-6">
-                {advantages.map((advantage, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <Image
-                      src={checkmarkBg}
-                      alt="checkmark background"
-                    />
-                    <p className="text-2xl max-w-[45rem]">
-                      {advantage}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        <List id="about" title="What is Node Sale?" items={whys} />
+        <List id="advantages" title="Advantages of Owning Fuse Network Nodes" items={advantages} />
         <section id="public-sale">
-          <div className="px-10 py-24">
+          <div className="px-10 py-24 md:px-4 md:py-12">
             <div className="w-full max-w-7xl m-auto flex flex-col gap-10">
-              <h2 className="text-5xl font-semibold text-center">
+              <h2 className="text-[2.5rem] md:text-[2rem] font-semibold text-center">
                 Become a Fuse Network Node Operator
               </h2>
-              <div className="flex justify-between gap-10 mt-10">
-                <div className="flex flex-col gap-7 w-full bg-tertiary rounded-[1.25rem] p-10">
-                  <p className="text-2xl font-semibold">
+              <div className="flex md:flex-col md:flex-col-reverse justify-between gap-10 mt-10">
+                <div className="flex flex-col gap-7 md:gap-4 w-full bg-tertiary rounded-[1.25rem] md:rounded-xl p-10 md:px-4 md:py-5">
+                  <p className="text-2xl md:text-lg font-semibold">
                     Tiers
                   </p>
-                  <div className="flex flex-col gap-2.5">
+                  <div className="flex flex-col gap-2.5 md:gap-1.5 md:text-xs">
                     {tiers.map((tier) => (
                       <div
                         key={tier.id}
-                        className="flex flex-col gap-8 bg-white rounded-[0.625rem] px-4 py-5"
+                        className="flex flex-col gap-8 bg-white rounded-[0.625rem] px-4 py-5 md:px-3 md:py-4"
                       >
                         <div className="flex justify-between gap-2">
-                          <div className="flex gap-4">
+                          <div className="flex gap-4 md:gap-3">
                             <p className="font-semibold">
                               Tier {tier.id}
                             </p>
@@ -187,7 +147,7 @@ export default function Home() {
                           </div>
                         </div>
                         {tier.status === "Selling" && (
-                          <div className="flex justify-between items-center gap-5">
+                          <div className="flex justify-between items-center gap-5 md:gap-3">
                             <div className="bg-tertiary rounded-[0.625rem] w-full h-2">
                               <div
                                 className="bg-light-teal rounded-[0.625rem] h-full"
@@ -210,11 +170,11 @@ export default function Home() {
                 </div>
                 <PublicSaleForm sellingTier={sellingTier} />
               </div>
-              <div className="flex flex-col gap-10 w-full bg-tertiary rounded-[1.25rem] p-10">
-                <p className="text-2xl font-semibold">
+              <div className="flex flex-col gap-10 md:gap-5 w-full bg-tertiary rounded-[1.25rem] p-10 md:p-6">
+                <p className="text-2xl md:text-lg font-semibold">
                   My licenses
                 </p>
-                <p className="text-lg">
+                <p className="text-lg text-dove-gray md:text-sm">
                   Congratulations! You have 2 licenses, and can launch 2 Data Availability nodes when Ember L2 goes live. Stay tuned!
                 </p>
               </div>
@@ -222,6 +182,7 @@ export default function Home() {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }

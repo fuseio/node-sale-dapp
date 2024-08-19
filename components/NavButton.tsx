@@ -26,7 +26,6 @@ const NavButton = ({ isOpen, setOpen }: NavButtonProps) => {
           isOpen={isOpen}
           height={18}
           strokeWidth={3}
-          color="#fff"
         />
       </button>
     </div>

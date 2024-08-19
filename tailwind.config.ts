@@ -38,9 +38,6 @@ const config: Config = {
         "1/10": "10%",
         "9/10": "90%",
       },
-      fontSize: {
-        "5xl": "2.5rem",
-      },
     },
   },
   plugins: [],
