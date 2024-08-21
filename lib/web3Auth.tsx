@@ -10,17 +10,20 @@ import { WalletServicesPlugin } from "@web3auth/wallet-services-plugin";
 import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK } from "@web3auth/base";
 import { Connection, cookieStorage, createConfig, createStorage, http } from "wagmi";
 import {
+  NEXT_PUBLIC_ENVIRONMENT,
   NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
   NEXT_PUBLIC_WEB3AUTH_CLIENT_ID,
 } from "./config";
-import { fuse, Chain } from "wagmi/chains";
+import { fuse, Chain, fuseSparknet } from "wagmi/chains";
 import { coinbaseWallet, injected, metaMask, walletConnect } from 'wagmi/connectors';
 import { IS_ETHEREUM_OBJECT_DETECTED, detectDevice, hex } from "./helpers";
 import { Web3AuthSocialConnector } from "./connectors/social";
 import { Web3AuthEmailConnector } from "./connectors/email";
 
 const chains: readonly [Chain, ...Chain[]] = [
-  fuse,
+  NEXT_PUBLIC_ENVIRONMENT === "production" ?
+    fuse :
+    fuseSparknet
 ]
 export function getConfig() {
   return createConfig({
@@ -54,7 +57,7 @@ export function getConfig() {
       Web3AuthConnectorInstance(Web3AuthEmailConnector, LOGIN_PROVIDER.EMAIL_PASSWORDLESS),
     ],
     transports: {
-      [fuse.id]: http(),
+      [NEXT_PUBLIC_ENVIRONMENT === "production" ? fuse.id : fuseSparknet.id]: http(),
     },
   })
 }
@@ -73,9 +76,9 @@ export const resetConnection = () => {
 export default function Web3AuthConnectorInstance(
   LoginConnector: any,
   loginProvider: LOGIN_PROVIDER_TYPE,
-  chain: Chain = fuse,
+  chain: Chain = NEXT_PUBLIC_ENVIRONMENT === "production" ? fuse : fuseSparknet,
 ) {
-  const name = "Fuse Console";
+  const name = "Fuse Node Sale";
   const iconUrl = "https://news.fuse.io/wp-content/uploads/2023/12/fuse.svg";
   const chainConfig = {
     chainNamespace: CHAIN_NAMESPACES.EIP155,

@@ -34,7 +34,7 @@ export const retrieveTotalSupply = createAsyncThunk(
   async () => {
     try {
       const totalSupply = await getTotalSupply();
-      return parseFloat(formatEther(totalSupply));
+      return Number(totalSupply);
     } catch (error: any) {
       console.error(error);
       throw error;
@@ -47,9 +47,13 @@ export const retrieveCurrentTierDetail = createAsyncThunk(
   async () => {
     try {
       const currentTierDetail = await getCurrentTierDetail();
-      const formattedCurrentTierDetail: TierDetail = {...initTierDetail};
+      const formattedCurrentTierDetail: TierDetail = { ...initTierDetail };
       for (const [key, value] of Object.entries(currentTierDetail)) {
-        formattedCurrentTierDetail[key as keyof TierDetail] = parseFloat(formatEther(value));
+        if (key === "price") {
+          formattedCurrentTierDetail[key as keyof TierDetail] = parseFloat(formatEther(value));
+        } else {
+          formattedCurrentTierDetail[key as keyof TierDetail] = Number(value);
+        }
       }
       return formattedCurrentTierDetail;
     } catch (error: any) {
@@ -66,9 +70,13 @@ export const retrieveTierDetails = createAsyncThunk(
       const tierDetails = await getTierDetails();
       const formattedTierDetails: TierDetail[] = [];
       tierDetails.map((tierDetail, i) => {
-        const detail: TierDetail = {...initTierDetail};
+        const detail: TierDetail = { ...initTierDetail };
         for (const [key, value] of Object.entries(tierDetail)) {
-          detail[key as keyof TierDetail] = parseFloat(formatEther(value));
+          if (key === "price") {
+            detail[key as keyof TierDetail] = parseFloat(formatEther(value));
+          } else {
+            detail[key as keyof TierDetail] = Number(value);
+          }
         }
         formattedTierDetails.push(detail);
       })

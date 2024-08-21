@@ -769,11 +769,6 @@ export const NodeSaleAbi = narrow([
       },
       {
         "internalType": "uint256",
-        "name": "tier",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
       },
@@ -1071,5 +1066,4 @@ export const NodeSaleAbi = narrow([
     "stateMutability": "nonpayable",
     "type": "function"
   }
-])
-  ;
+]);

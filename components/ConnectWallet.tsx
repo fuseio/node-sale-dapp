@@ -15,7 +15,7 @@ import {
 } from "wagmi";
 import { setIsWalletModalOpen } from "@/store/navbarSlice";
 import { eclipseAddress, evmDecimals } from "@/lib/helpers";
-import { fuse } from "wagmi/chains";
+import { fuse, fuseSparknet } from "wagmi/chains";
 import fuseIcon from "@/assets/fuse-icon.svg";
 import qr from "@/assets/qr.svg";
 import disconnectIcon from "@/assets/disconnect.svg";
@@ -26,6 +26,7 @@ import Copy from "./ui/Copy";
 import { formatUnits } from "viem";
 import Spinner from "./ui/Spinner";
 import { resetConnection } from "@/lib/web3Auth";
+import { NEXT_PUBLIC_ENVIRONMENT } from "@/lib/config";
 
 const menu: Variants = {
   closed: () => ({
@@ -57,7 +58,7 @@ type Icons = {
 };
 
 const icons: Icons = {
-  [fuse.id]: fuseIcon,
+  [NEXT_PUBLIC_ENVIRONMENT === "production" ? fuse.id : fuseSparknet.id]: fuseIcon,
 };
 
 type UsdTokens = {
@@ -65,7 +66,7 @@ type UsdTokens = {
 };
 
 const usdTokens: UsdTokens = {
-  [fuse.id]: "fuse-network-token",
+  [NEXT_PUBLIC_ENVIRONMENT === "production" ? fuse.id : fuseSparknet.id]: "fuse-network-token",
 };
 
 const ConnectWallet = ({
@@ -122,7 +123,7 @@ const ConnectWallet = ({
     const controller = new AbortController();
     dispatch(
       fetchUsdPrice({
-        tokenId: usdTokens[chain?.id ?? fuse.id],
+        tokenId: usdTokens[chain?.id ?? NEXT_PUBLIC_ENVIRONMENT === "production" ? fuse.id : fuseSparknet.id],
         controller,
       })
     );
@@ -159,7 +160,7 @@ const ConnectWallet = ({
       >
         <Image
           src={icons[chain?.id ?? 0]}
-          alt={chain?.name ?? "Fuse"}
+          alt={chain?.name ?? NEXT_PUBLIC_ENVIRONMENT === "production" ? fuse.name : fuseSparknet.name}
           width={25}
           height={25}
         />
@@ -245,7 +246,7 @@ const ConnectWallet = ({
         >
           <Image
             src={icons[chain?.id ?? 0]}
-            alt={chain?.name ?? "Fuse"}
+            alt={chain?.name ?? NEXT_PUBLIC_ENVIRONMENT === "production" ? fuse.name : fuseSparknet.name}
             width={25}
             height={25}
           />
@@ -300,7 +301,7 @@ const ConnectWallet = ({
               <div className="flex items-center gap-3">
                 <Image
                   src={icons[chain?.id ?? 0]}
-                  alt={chain?.name ?? "Fuse"}
+                  alt={chain?.name ?? NEXT_PUBLIC_ENVIRONMENT === "production" ? fuse.name : fuseSparknet.name}
                   width={40}
                   height={40}
                   className="border border-[0.5px] border-gray-alpha-40 rounded-full"
@@ -319,7 +320,7 @@ const ConnectWallet = ({
                 ) : (
                   <p className="text-xs text-text-dark-gray">
                     $
-                    {chain && chain.id === fuse.id
+                    {chain && chain.id === (NEXT_PUBLIC_ENVIRONMENT === "production" ? fuse.id : fuseSparknet.id)
                       ? new Intl.NumberFormat().format(
                         parseFloat(
                           (
