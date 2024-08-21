@@ -37,3 +37,10 @@ export type Tier = TierSoldOut | TierSelling;
 export type Config = {
   nodeSaleAddress: Address
 }
+
+export type TierDetail = {
+  tier: number;
+  price: number;
+  availableSupply: number;
+  maxSupply: number;
+}

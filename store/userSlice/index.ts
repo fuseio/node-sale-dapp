@@ -2,18 +2,30 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AppState } from "../rootReducer";
 import { getCurrentTierDetail, getTierDetails, getTotalSupply } from "@/lib/contractInteract";
 import { formatEther } from "viem";
+import { TierDetail } from "@/lib/types";
+
+const initTierDetail: TierDetail = {
+  tier: 0,
+  price: 0,
+  availableSupply: 0,
+  maxSupply: 0
+}
 
 export interface UserStateType {
   totalSupply: number;
   isTotalSupplyLoading: boolean;
+  currentTierDetail: TierDetail;
   isCurrentTierDetailLoading: boolean;
+  tierDetails: TierDetail[]
   isTierDetailsLoading: boolean;
 }
 
 const INIT_STATE: UserStateType = {
   totalSupply: 0,
   isTotalSupplyLoading: false,
+  currentTierDetail: initTierDetail,
   isCurrentTierDetailLoading: false,
+  tierDetails: [],
   isTierDetailsLoading: false,
 };
 
@@ -35,7 +47,11 @@ export const retrieveCurrentTierDetail = createAsyncThunk(
   async () => {
     try {
       const currentTierDetail = await getCurrentTierDetail();
-      return currentTierDetail;
+      const formattedCurrentTierDetail: TierDetail = {...initTierDetail};
+      for (const [key, value] of Object.entries(currentTierDetail)) {
+        formattedCurrentTierDetail[key as keyof TierDetail] = parseFloat(formatEther(value));
+      }
+      return formattedCurrentTierDetail;
     } catch (error: any) {
       console.error(error);
       throw error;
@@ -48,7 +64,15 @@ export const retrieveTierDetails = createAsyncThunk(
   async () => {
     try {
       const tierDetails = await getTierDetails();
-      return tierDetails;
+      const formattedTierDetails: TierDetail[] = [];
+      tierDetails.map((tierDetail, i) => {
+        const detail: TierDetail = {...initTierDetail};
+        for (const [key, value] of Object.entries(tierDetail)) {
+          detail[key as keyof TierDetail] = parseFloat(formatEther(value));
+        }
+        formattedTierDetails.push(detail);
+      })
+      return formattedTierDetails;
     } catch (error: any) {
       console.error(error);
       throw error;
@@ -77,6 +101,7 @@ const userSlice = createSlice({
       })
       .addCase(retrieveCurrentTierDetail.fulfilled, (state, action) => {
         state.isCurrentTierDetailLoading = false;
+        state.currentTierDetail = action.payload;
       })
       .addCase(retrieveCurrentTierDetail.rejected, (state) => {
         state.isCurrentTierDetailLoading = false;
@@ -86,6 +111,7 @@ const userSlice = createSlice({
       })
       .addCase(retrieveTierDetails.fulfilled, (state, action) => {
         state.isTierDetailsLoading = false;
+        state.tierDetails = action.payload;
       })
       .addCase(retrieveTierDetails.rejected, (state) => {
         state.isTierDetailsLoading = false;

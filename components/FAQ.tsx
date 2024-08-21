@@ -1,4 +1,3 @@
-"use client";
 import FaqQuestion from "./FaqQuestion";
 
 type FAQProps = {

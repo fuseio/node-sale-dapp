@@ -1,3 +1,4 @@
+"use client";
 import PublicSaleForm from "@/components/PublicSaleForm";
 import Topbar from "@/components/Topbar";
 import { Tier, TierStatus } from "@/lib/types";
@@ -8,6 +9,9 @@ import checkmarkBg from "@/assets/checkmark-bg.svg";
 import Footer from "@/components/Footer";
 import List from "@/components/List";
 import FAQ from "@/components/FAQ";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { retrieveCurrentTierDetail, retrieveTierDetails, retrieveTotalSupply, selectUserSlice } from "@/store/userSlice";
+import { useEffect } from "react";
 
 const tiers: Tier[] = [
   {
@@ -89,6 +93,15 @@ const answers = [
 ]
 
 export default function Home() {
+  const dispatch = useAppDispatch();
+  const { totalSupply, currentTierDetail, tierDetails } = useAppSelector(selectUserSlice);
+
+  useEffect(() => {
+    dispatch(retrieveTotalSupply());
+    dispatch(retrieveCurrentTierDetail());
+    dispatch(retrieveTierDetails());
+  }, [dispatch])
+
   return (
     <div className="w-full font-mona min-h-screen">
       <Topbar />
@@ -124,7 +137,7 @@ export default function Home() {
                       Sold licenses
                     </p>
                     <p className="text-6xl md:text-[2.813rem] leading-none font-semibold">
-                      35
+                      {totalSupply}
                     </p>
                   </div>
                   <div className="flex flex-col">
@@ -132,7 +145,7 @@ export default function Home() {
                       Current license price
                     </p>
                     <p className="text-6xl md:text-[2.813rem] leading-none font-semibold">
-                      {new Intl.NumberFormat().format(sellingTier.price)} FUSE
+                      {new Intl.NumberFormat().format(currentTierDetail.price)} FUSE
                     </p>
                   </div>
                 </div>

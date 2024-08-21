@@ -1,4 +1,3 @@
-"use client";
 import { TierSelling } from "@/lib/types";
 import { useState } from "react";
 import { useAccount } from "wagmi";
