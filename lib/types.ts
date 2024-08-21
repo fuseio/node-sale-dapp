@@ -1,3 +1,5 @@
+import { Address } from "viem";
+
 export type MenuItem = {
   title: string;
   link: string;
@@ -31,3 +33,7 @@ export type TierSelling = {
 };
 
 export type Tier = TierSoldOut | TierSelling;
+
+export type Config = {
+  nodeSaleAddress: Address
+}
