@@ -15,11 +15,31 @@ const publicClient = () => {
 };
 
 export const getTotalSupply = async () => {
-  const totalStakeAmount = await publicClient().readContract({
+  const totalSupply = await publicClient().readContract({
     address: CONFIG.nodeSaleAddress,
     abi: NodeSaleAbi,
     functionName: "totalSupply",
     args: []
   });
-  return parseFloat(formatEther(totalStakeAmount));
+  return parseFloat(formatEther(totalSupply));
+};
+
+export const getCurrentTierDetail = async () => {
+  const currentTierDetail = await publicClient().readContract({
+    address: CONFIG.nodeSaleAddress,
+    abi: NodeSaleAbi,
+    functionName: "getCurrentTierDetail",
+    args: []
+  });
+  return currentTierDetail;
+};
+
+export const getTierDetails = async () => {
+  const tierDetails = await publicClient().readContract({
+    address: CONFIG.nodeSaleAddress,
+    abi: NodeSaleAbi,
+    functionName: "getTierDetails",
+    args: []
+  });
+  return tierDetails;
 };
