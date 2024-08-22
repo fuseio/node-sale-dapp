@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useAccount } from "wagmi";
 import ConnectWallet from "./ConnectWallet";
-import { useAppSelector } from "@/lib/hooks";
-import { selectUserSlice } from "@/store/userSlice";
-import { mint } from "@/lib/contractInteract";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { mintToken, selectUserSlice } from "@/store/userSlice";
+import Spinner from "./ui/Spinner";
 
 type PublicSaleInputProps = {
   amount: number;
@@ -12,7 +12,8 @@ type PublicSaleInputProps = {
 
 export default function PublicSaleForm() {
   const [amount, setAmount] = useState(1);
-  const { currentTierDetail } = useAppSelector(selectUserSlice);
+  const dispatch = useAppDispatch();
+  const { isClient, isCurrentTierDetailLoading, currentTierDetail } = useAppSelector(selectUserSlice);
 
   return (
     <form
@@ -22,7 +23,7 @@ export default function PublicSaleForm() {
         const formData = new FormData(e.currentTarget);
         const formEntries = Object.fromEntries(formData.entries());
         const amount = formEntries["public-sale-amount"] as string;
-        mint(currentTierDetail.price, parseInt(amount));
+        dispatch(mintToken({ price: currentTierDetail.price, amount: parseInt(amount) }));
       }}
     >
       <p className="text-2xl md:text-lg font-semibold">
@@ -33,17 +34,23 @@ export default function PublicSaleForm() {
           <p className="md:text-xs text-dove-gray">
             Current tier
           </p>
-          <p className="text-xl md:text-sm leading-none font-semibold">
-            Tier {currentTierDetail.tier}
-          </p>
+          {!isClient || isCurrentTierDetailLoading ?
+            <span className="w-20 h-6 md:h-5 rounded-md animate-pulse bg-white"></span> :
+            <p className="text-xl md:text-sm leading-none font-semibold">
+              Tier {currentTierDetail.tier}
+            </p>
+          }
         </div>
         <div className="flex justify-between items-center gap-2">
           <p className="md:text-xs text-dove-gray">
             Price per license
           </p>
-          <p className="text-xl md:text-sm leading-none font-semibold">
-            {new Intl.NumberFormat().format(currentTierDetail.price)} FUSE
-          </p>
+          {!isClient || isCurrentTierDetailLoading ?
+            <span className="w-20 h-6 md:h-5 rounded-md animate-pulse bg-white"></span> :
+            <p className="text-xl md:text-sm leading-none font-semibold">
+              {new Intl.NumberFormat().format(currentTierDetail.price)} FUSE
+            </p>
+          }
         </div>
         <div className="flex justify-between items-center gap-2">
           <p className="md:text-xs text-dove-gray">
@@ -55,9 +62,12 @@ export default function PublicSaleForm() {
           <p className="md:text-xs text-dove-gray">
             Pay
           </p>
-          <p className="text-xl md:text-sm leading-none font-semibold">
-            {new Intl.NumberFormat().format(currentTierDetail.price * Math.min(amount, currentTierDetail.availableSupply))} FUSE
-          </p>
+          {!isClient || isCurrentTierDetailLoading ?
+            <span className="w-20 h-6 md:h-5 rounded-md animate-pulse bg-white"></span> :
+            <p className="text-xl md:text-sm leading-none font-semibold">
+              {new Intl.NumberFormat().format(currentTierDetail.price * Math.min(amount, currentTierDetail.availableSupply))} FUSE
+            </p>
+          }
         </div>
       </div>
       <PublicSaleButton />
@@ -98,6 +108,7 @@ const PublicSaleInput = ({ amount, setAmount }: PublicSaleInputProps) => {
 
 const PublicSaleButton = () => {
   const { isConnected } = useAccount();
+  const { isClient, isMinting } = useAppSelector(selectUserSlice);
 
   return (
     <div className="mt-auto md:mt-16">
@@ -107,6 +118,9 @@ const PublicSaleButton = () => {
           className="transition ease-in-out w-full p-4 md:py-2.5 flex justify-center items-center gap-2 bg-black rounded-full text-xl md:text-sm leading-none text-white font-semibold hover:bg-success hover:text-black"
         >
           Buy
+          {!isClient || isMinting &&
+            <Spinner />
+          }
         </button> :
         <ConnectWallet className="transition ease-in-out hover:bg-success hover:text-black hover:border-success w-full text-xl md:text-sm leading-none py-4 md:py-2.5" />
       }

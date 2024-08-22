@@ -9,8 +9,9 @@ import Footer from "@/components/Footer";
 import List from "@/components/List";
 import FAQ from "@/components/FAQ";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { retrieveCurrentTierDetail, retrieveTierDetails, retrieveTotalSupply, selectUserSlice } from "@/store/userSlice";
-import { useEffect, useState } from "react";
+import { tokenBought, retrieveCurrentTierDetail, retrieveTierDetails, retrieveTotalSupply, selectUserSlice, setIsClient } from "@/store/userSlice";
+import { useEffect } from "react";
+import { useAccount } from "wagmi";
 
 const whys = [
   "A step in the evolution of Fuse Network towards launching the new Ember mainnet"
@@ -61,15 +62,24 @@ const answers = [
 
 export default function Home() {
   const dispatch = useAppDispatch();
-  const { isTotalSupplyLoading, totalSupply, isCurrentTierDetailLoading, currentTierDetail, isTierDetailsLoading, tierDetails } = useAppSelector(selectUserSlice);
-  const [isClient, setIsClient] = useState(false);
+  const { isClient, isTotalSupplyLoading, totalSupply, isCurrentTierDetailLoading, currentTierDetail, isTierDetailsLoading, tierDetails, isBoughtLoading, bought, isMinted } = useAppSelector(selectUserSlice);
+  const { address } = useAccount();
+
+  useEffect(() => {
+    dispatch(setIsClient(true));
+  }, [dispatch])
 
   useEffect(() => {
     dispatch(retrieveTotalSupply());
     dispatch(retrieveCurrentTierDetail());
     dispatch(retrieveTierDetails());
-    setIsClient(true);
-  }, [dispatch])
+  }, [isMinted, dispatch])
+
+  useEffect(() => {
+    if (address) {
+      dispatch(tokenBought({ address }));
+    }
+  }, [address, isMinted, dispatch])
 
   return (
     <div className="w-full font-mona min-h-screen">
@@ -181,7 +191,7 @@ export default function Home() {
                   <div className="flex flex-col gap-2.5 md:gap-1.5 md:text-xs">
                     {!isClient || isTierDetailsLoading ?
                       new Array(5).fill(0).map((_, i) => (
-                        <span key={i} className="w-full h-16 md:h-12 rounded-[0.625rem] animate-pulse bg-white"></span>
+                        <span key={i} className={`w-full ${i === 0 ? "h-32 md:h-32" : "h-16 md:h-12"} rounded-[0.625rem] animate-pulse bg-white`}></span>
                       )) :
                       tierDetails.map((tierDetail) => (
                         <div
@@ -234,9 +244,15 @@ export default function Home() {
                 <p className="text-2xl md:text-lg font-semibold">
                   My licenses
                 </p>
-                <p className="text-lg text-dove-gray md:text-sm">
-                  Congratulations! You have 2 licenses, and can launch 2 Data Availability nodes when Ember L2 goes live. Stay tuned!
-                </p>
+                {!isClient || isBoughtLoading ?
+                  <span className="w-full h-7 md:h-12 rounded-md animate-pulse bg-white"></span> :
+                  <p className="text-lg text-dove-gray md:text-sm">
+                    {bought ?
+                      `Congratulations! You have ${bought} licenses, and can launch 2 Data Availability nodes when Ember L2 goes live. Stay tuned!` :
+                      "You have not purchased a license."
+                    }
+                  </p>
+                }
               </div>
             </div>
           </div>

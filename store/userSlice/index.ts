@@ -1,7 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppState } from "../rootReducer";
-import { getCurrentTierDetail, getTierDetails, getTotalSupply } from "@/lib/contractInteract";
-import { formatEther } from "viem";
+import { getBalanceOfBatch, getCurrentTierDetail, getMaxTier, getTierDetails, getTotalSupply, mint } from "@/lib/contractInteract";
+import { Address, formatEther } from "viem";
 import { TierDetail } from "@/lib/types";
 
 const initTierDetail: TierDetail = {
@@ -12,21 +12,31 @@ const initTierDetail: TierDetail = {
 }
 
 export interface UserStateType {
-  totalSupply: number;
+  isClient: boolean;
   isTotalSupplyLoading: boolean;
-  currentTierDetail: TierDetail;
+  totalSupply: number;
   isCurrentTierDetailLoading: boolean;
-  tierDetails: TierDetail[]
+  currentTierDetail: TierDetail;
   isTierDetailsLoading: boolean;
+  tierDetails: TierDetail[]
+  isBoughtLoading: boolean;
+  bought: number;
+  isMinting: boolean;
+  isMinted: boolean;
 }
 
 const INIT_STATE: UserStateType = {
-  totalSupply: 0,
+  isClient: false,
   isTotalSupplyLoading: false,
-  currentTierDetail: initTierDetail,
+  totalSupply: 0,
   isCurrentTierDetailLoading: false,
-  tierDetails: [],
+  currentTierDetail: initTierDetail,
   isTierDetailsLoading: false,
+  tierDetails: [],
+  isBoughtLoading: false,
+  bought: 0,
+  isMinting: false,
+  isMinted: false,
 };
 
 export const retrieveTotalSupply = createAsyncThunk(
@@ -51,6 +61,8 @@ export const retrieveCurrentTierDetail = createAsyncThunk(
       for (const [key, value] of Object.entries(currentTierDetail)) {
         if (key === "price") {
           formattedCurrentTierDetail[key as keyof TierDetail] = parseFloat(formatEther(value));
+        } else if (key === "tier") {
+          formattedCurrentTierDetail[key as keyof TierDetail] = Number(value) + 1;
         } else {
           formattedCurrentTierDetail[key as keyof TierDetail] = Number(value);
         }
@@ -74,6 +86,8 @@ export const retrieveTierDetails = createAsyncThunk(
         for (const [key, value] of Object.entries(tierDetail)) {
           if (key === "price") {
             detail[key as keyof TierDetail] = parseFloat(formatEther(value));
+          } else if (key === "tier") {
+            detail[key as keyof TierDetail] = Number(value) + 1;
           } else {
             detail[key as keyof TierDetail] = Number(value);
           }
@@ -88,10 +102,77 @@ export const retrieveTierDetails = createAsyncThunk(
   }
 );
 
+export const tokenBought = createAsyncThunk<
+  any,
+  {
+    address: Address;
+  }
+>(
+  "USER/TOKEN_BOUGHT",
+  async (
+    {
+      address
+    }: {
+      address: Address;
+    }
+  ) => {
+    try {
+      const maxTier = await getMaxTier();
+      const formattedMaxTier = Number(maxTier);
+      const addresses: Address[] = [];
+      const ids = [];
+      for (let i = 0; i < formattedMaxTier; i++) {
+        addresses.push(address);
+        ids.push(BigInt(i));
+      }
+      const balanceOfBatch = await getBalanceOfBatch(addresses, ids);
+      let balance = 0;
+      for (let i = 0; i < balanceOfBatch.length; i++) {
+        balance += Number(balanceOfBatch[i]);
+      }
+      return balance;
+    } catch (error: any) {
+      console.error(error);
+      throw error;
+    }
+  }
+);
+
+export const mintToken = createAsyncThunk<
+  any,
+  {
+    price: number;
+    amount: number;
+  }
+>(
+  "USER/MINT_TOKEN",
+  async (
+    {
+      price,
+      amount
+    }: {
+      price: number;
+      amount: number;
+    }
+  ) => {
+    try {
+      return mint(price, amount);
+    } catch (error: any) {
+      console.error(error);
+      throw error;
+    }
+  }
+);
+
+
 const userSlice = createSlice({
   name: "USER_STATE",
   initialState: INIT_STATE,
-  reducers: {},
+  reducers: {
+    setIsClient: (state, action: PayloadAction<boolean>) => {
+      state.isClient = action.payload
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(retrieveTotalSupply.pending, (state) => {
@@ -124,11 +205,33 @@ const userSlice = createSlice({
       .addCase(retrieveTierDetails.rejected, (state) => {
         state.isTierDetailsLoading = false;
       })
+      .addCase(tokenBought.pending, (state) => {
+        state.isBoughtLoading = true;
+      })
+      .addCase(tokenBought.fulfilled, (state, action) => {
+        state.isBoughtLoading = false;
+        state.bought = action.payload;
+      })
+      .addCase(tokenBought.rejected, (state) => {
+        state.isBoughtLoading = false;
+      })
+      .addCase(mintToken.pending, (state) => {
+        state.isMinting = true;
+      })
+      .addCase(mintToken.fulfilled, (state) => {
+        state.isMinting = false;
+        state.isMinted = true;
+      })
+      .addCase(mintToken.rejected, (state) => {
+        state.isMinting = false;
+      })
   }
 });
 
 export const selectUserSlice = (state: AppState): UserStateType => state.user;
 
-export const { } = userSlice.actions;
+export const {
+  setIsClient
+} = userSlice.actions;
 
 export default userSlice.reducer;

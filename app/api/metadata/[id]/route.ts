@@ -15,7 +15,9 @@ export async function GET(
     return `${n}${suffix}`;
   };
 
-  const id = params.id;
+  console.log("metadataId", params.id, typeof params.id);
+
+  const id = params.id + 1;
 
   return Response.json({
     "description": `${formatOrdinals(parseInt(id))} tier of Fuse Node Sale`,

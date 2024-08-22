@@ -1,27 +1,16 @@
-import { createPublicClient, createWalletClient, custom, http, parseEther } from "viem";
+import { Address, createPublicClient, http, parseEther } from "viem";
 import { NodeSaleAbi } from "./abi/NodeSale";
-import { fuse, fuseSparknet } from "viem/chains";
-import { CONFIG, NEXT_PUBLIC_ENVIRONMENT } from "./config";
-import { waitForTransactionReceipt } from "viem/actions";
+import { CONFIG } from "./config";
 import { hex } from "./helpers";
+import { getAccount, getWalletClient, waitForTransactionReceipt, writeContract } from "wagmi/actions";
+import { getConfig } from "./web3Auth";
 
 const publicClient = () => {
   return createPublicClient({
-    chain: NEXT_PUBLIC_ENVIRONMENT === "production" ? fuse : fuseSparknet,
-    transport: http(
-      NEXT_PUBLIC_ENVIRONMENT === "production" ?
-        fuse.rpcUrls.default.http[0] :
-        fuseSparknet.rpcUrls.default.http[0]
-    ),
+    chain: CONFIG.chain,
+    transport: http(CONFIG.chain.rpcUrls.default.http[0]),
   });
 };
-
-const client = () => {
-  return createWalletClient({
-    chain: NEXT_PUBLIC_ENVIRONMENT === "production" ? fuse : fuseSparknet,
-    transport: custom(window.ethereum)
-  });
-}
 
 export const getTotalSupply = () => {
   return publicClient().readContract({
@@ -50,26 +39,50 @@ export const getTierDetails = () => {
   });
 };
 
+export const getMaxTier = () => {
+  return publicClient().readContract({
+    address: CONFIG.nodeSaleAddress,
+    abi: NodeSaleAbi,
+    functionName: "getMaxTier",
+    args: []
+  });
+};
+
+export const getBalanceOfBatch = (addresses: Address[], ids: bigint[]) => {
+  return publicClient().readContract({
+    address: CONFIG.nodeSaleAddress,
+    abi: NodeSaleAbi,
+    functionName: "balanceOfBatch",
+    args: [addresses, ids]
+  });
+};
 
 export const mint = async (price: number, amount: number) => {
   try {
-    const walletClient = client();
-    const [account] = await walletClient.getAddresses();
-
-    const { request } = await publicClient().simulateContract({
-      address: CONFIG.nodeSaleAddress,
-      abi: NodeSaleAbi,
-      account,
-      functionName: "mint",
-      value: parseEther((price * amount).toString()),
-      args: [account, BigInt(amount), hex],
-    });
-    const hash = await walletClient.writeContract(request);
-
-    return waitForTransactionReceipt(publicClient(), {
-      hash,
-    });
+    const config = getConfig();
+    const walletClient = await getWalletClient(config, { chainId: CONFIG.chain.id });
+    const { connector } = getAccount(config);
+    if (walletClient) {
+      const accounts = await walletClient.getAddresses();
+      const account = accounts[0];
+      const tx = await writeContract(config, {
+        address: CONFIG.nodeSaleAddress,
+        abi: NodeSaleAbi,
+        account,
+        functionName: "mint",
+        value: parseEther((price * amount).toString()),
+        args: [account, BigInt(amount), hex],
+        connector,
+        __mode: "prepared",
+      });
+      await waitForTransactionReceipt(config, {
+        chainId: CONFIG.chain.id,
+        hash: tx,
+      });
+      return tx;
+    }
   } catch (e) {
     console.log(e);
+    throw e;
   }
 };

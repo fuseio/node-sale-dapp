@@ -1,4 +1,4 @@
-import { Address } from "viem";
+import { Address, Chain } from "viem";
 
 export type MenuItem = {
   title: string;
@@ -13,7 +13,8 @@ export type WalletType = {
 }
 
 export type Config = {
-  nodeSaleAddress: Address
+  nodeSaleAddress: Address;
+  chain: Chain;
 }
 
 export type TierDetail = {

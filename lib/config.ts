@@ -1,3 +1,4 @@
+import { fuse, fuseSparknet } from "viem/chains"
 import { hex } from "./helpers"
 import { Config } from "./types"
 
@@ -11,5 +12,6 @@ export const NEXT_PUBLIC_ENVIRONMENT = process.env.NEXT_PUBLIC_COIN_GECKO_API_KE
 
 
 export const CONFIG: Config = {
-  nodeSaleAddress: NEXT_PUBLIC_ENVIRONMENT === "production" ? hex : "0x6Aa9566BA52CdDC6422D5894dC9C2B668284E0d6"
+  nodeSaleAddress: NEXT_PUBLIC_ENVIRONMENT === "production" ? hex : "0x6Aa9566BA52CdDC6422D5894dC9C2B668284E0d6",
+  chain: NEXT_PUBLIC_ENVIRONMENT === "production" ? fuse : fuseSparknet
 }
