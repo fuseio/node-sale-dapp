@@ -15,8 +15,6 @@ export async function GET(
     return `${n}${suffix}`;
   };
 
-  console.log("metadataId", params.id, typeof params.id);
-
   const id = params.id + 1;
 
   return Response.json({

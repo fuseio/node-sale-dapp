@@ -63,7 +63,7 @@ const answers = [
 export default function Home() {
   const dispatch = useAppDispatch();
   const { isClient, isTotalSupplyLoading, totalSupply, isCurrentTierDetailLoading, currentTierDetail, isTierDetailsLoading, tierDetails, isBoughtLoading, bought, isMinted } = useAppSelector(selectUserSlice);
-  const { address } = useAccount();
+  const { isConnected, address } = useAccount();
 
   useEffect(() => {
     dispatch(setIsClient(true));
@@ -115,7 +115,7 @@ export default function Home() {
                     <p>
                       Sold licenses
                     </p>
-                    {!isClient || isTotalSupplyLoading ?
+                    {!isMinted && (!isClient || isTotalSupplyLoading) ?
                       <span className="w-20 h-16 md:h-12 rounded-md animate-pulse bg-white/20"></span> :
                       <p className="text-6xl md:text-[2.813rem] leading-none font-semibold">
                         {totalSupply}
@@ -126,7 +126,7 @@ export default function Home() {
                     <p>
                       Current license price
                     </p>
-                    {!isClient || isCurrentTierDetailLoading ?
+                    {!isMinted && (!isClient || isCurrentTierDetailLoading) ?
                       <span className="w-40 h-16 md:h-12 rounded-md animate-pulse bg-white/20"></span> :
                       <p className="text-6xl md:text-[2.813rem] leading-none font-semibold">
                         {new Intl.NumberFormat().format(currentTierDetail.price)} FUSE
@@ -189,7 +189,7 @@ export default function Home() {
                     Tiers
                   </p>
                   <div className="flex flex-col gap-2.5 md:gap-1.5 md:text-xs">
-                    {!isClient || isTierDetailsLoading ?
+                    {!isMinted && (!isClient || isTierDetailsLoading) ?
                       new Array(5).fill(0).map((_, i) => (
                         <span key={i} className={`w-full ${i === 0 ? "h-32 md:h-32" : "h-16 md:h-12"} rounded-[0.625rem] animate-pulse bg-white`}></span>
                       )) :
@@ -244,12 +244,14 @@ export default function Home() {
                 <p className="text-2xl md:text-lg font-semibold">
                   My licenses
                 </p>
-                {!isClient || isBoughtLoading ?
+                {!isMinted && (!isClient || isBoughtLoading) ?
                   <span className="w-full h-7 md:h-12 rounded-md animate-pulse bg-white"></span> :
                   <p className="text-lg text-dove-gray md:text-sm">
-                    {bought ?
-                      `Congratulations! You have ${bought} licenses, and can launch 2 Data Availability nodes when Ember L2 goes live. Stay tuned!` :
-                      "You have not purchased a license."
+                    {isConnected ?
+                      bought ?
+                        `Congratulations! You have ${bought} licenses, and can launch 2 Data Availability nodes when Ember L2 goes live. Stay tuned!` :
+                        "You have not purchased a license." :
+                      "Connect Wallet to view your purchased licenses."
                     }
                   </p>
                 }

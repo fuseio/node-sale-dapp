@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppState } from "../rootReducer";
-import { getBalanceOfBatch, getCurrentTierDetail, getMaxTier, getTierDetails, getTotalSupply, mint } from "@/lib/contractInteract";
+import { getBalanceOfBatch, getCurrentTierDetail, getMaxTier, getTierDetails, getTotalSupply } from "@/lib/contractInteract";
 import { Address, formatEther } from "viem";
 import { TierDetail } from "@/lib/types";
 
@@ -21,7 +21,6 @@ export interface UserStateType {
   tierDetails: TierDetail[]
   isBoughtLoading: boolean;
   bought: number;
-  isMinting: boolean;
   isMinted: boolean;
 }
 
@@ -35,7 +34,6 @@ const INIT_STATE: UserStateType = {
   tierDetails: [],
   isBoughtLoading: false,
   bought: 0,
-  isMinting: false,
   isMinted: false,
 };
 
@@ -138,39 +136,15 @@ export const tokenBought = createAsyncThunk<
   }
 );
 
-export const mintToken = createAsyncThunk<
-  any,
-  {
-    price: number;
-    amount: number;
-  }
->(
-  "USER/MINT_TOKEN",
-  async (
-    {
-      price,
-      amount
-    }: {
-      price: number;
-      amount: number;
-    }
-  ) => {
-    try {
-      return mint(price, amount);
-    } catch (error: any) {
-      console.error(error);
-      throw error;
-    }
-  }
-);
-
-
 const userSlice = createSlice({
   name: "USER_STATE",
   initialState: INIT_STATE,
   reducers: {
     setIsClient: (state, action: PayloadAction<boolean>) => {
       state.isClient = action.payload
+    },
+    setIsMinted: (state, action: PayloadAction<boolean>) => {
+      state.isMinted = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -215,23 +189,14 @@ const userSlice = createSlice({
       .addCase(tokenBought.rejected, (state) => {
         state.isBoughtLoading = false;
       })
-      .addCase(mintToken.pending, (state) => {
-        state.isMinting = true;
-      })
-      .addCase(mintToken.fulfilled, (state) => {
-        state.isMinting = false;
-        state.isMinted = true;
-      })
-      .addCase(mintToken.rejected, (state) => {
-        state.isMinting = false;
-      })
   }
 });
 
 export const selectUserSlice = (state: AppState): UserStateType => state.user;
 
 export const {
-  setIsClient
+  setIsClient,
+  setIsMinted
 } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -144,6 +144,7 @@ const ConnectWallet = ({
           className
         }
         onClick={() => dispatch(setIsWalletModalOpen(true))}
+        type="button"
       >
         Connect Wallet
       </button>
