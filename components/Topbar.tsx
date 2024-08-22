@@ -1,4 +1,3 @@
-"use client";
 import { useState } from "react";
 import fuseLogo from "@/assets/fuse-logo.svg";
 import NavMenu from "./NavMenu";

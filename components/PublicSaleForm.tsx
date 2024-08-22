@@ -1,24 +1,31 @@
-"use client";
-import { TierSelling } from "@/lib/types";
 import { useState } from "react";
 import { useAccount } from "wagmi";
 import ConnectWallet from "./ConnectWallet";
-
-type PublicSaleFormProps = {
-  sellingTier: TierSelling;
-}
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { mintToken, selectUserSlice } from "@/store/userSlice";
+import Spinner from "./ui/Spinner";
 
 type PublicSaleInputProps = {
   amount: number;
   setAmount: React.Dispatch<React.SetStateAction<number>>;
-  sellingTier: TierSelling;
 }
 
-export default function PublicSaleForm({ sellingTier }: PublicSaleFormProps) {
+export default function PublicSaleForm() {
   const [amount, setAmount] = useState(1);
+  const dispatch = useAppDispatch();
+  const { isClient, isCurrentTierDetailLoading, currentTierDetail } = useAppSelector(selectUserSlice);
 
   return (
-    <form className="flex flex-col gap-9 md:gap-5 w-full bg-tertiary rounded-[1.25rem] md:rounded-xl p-10 md:px-4 md:py-5">
+    <form
+      className="flex flex-col gap-9 md:gap-5 w-full bg-tertiary rounded-[1.25rem] md:rounded-xl p-10 md:px-4 md:py-5"
+      onSubmit={(e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const formEntries = Object.fromEntries(formData.entries());
+        const amount = formEntries["public-sale-amount"] as string;
+        dispatch(mintToken({ price: currentTierDetail.price, amount: parseInt(amount) }));
+      }}
+    >
       <p className="text-2xl md:text-lg font-semibold">
         Purchase
       </p>
@@ -27,31 +34,40 @@ export default function PublicSaleForm({ sellingTier }: PublicSaleFormProps) {
           <p className="md:text-xs text-dove-gray">
             Current tier
           </p>
-          <p className="text-xl md:text-sm leading-none font-semibold">
-            Tier {sellingTier.id}
-          </p>
+          {!isClient || isCurrentTierDetailLoading ?
+            <span className="w-20 h-6 md:h-5 rounded-md animate-pulse bg-white"></span> :
+            <p className="text-xl md:text-sm leading-none font-semibold">
+              Tier {currentTierDetail.tier}
+            </p>
+          }
         </div>
         <div className="flex justify-between items-center gap-2">
           <p className="md:text-xs text-dove-gray">
             Price per license
           </p>
-          <p className="text-xl md:text-sm leading-none font-semibold">
-            {new Intl.NumberFormat().format(sellingTier.price)} FUSE
-          </p>
+          {!isClient || isCurrentTierDetailLoading ?
+            <span className="w-20 h-6 md:h-5 rounded-md animate-pulse bg-white"></span> :
+            <p className="text-xl md:text-sm leading-none font-semibold">
+              {new Intl.NumberFormat().format(currentTierDetail.price)} FUSE
+            </p>
+          }
         </div>
         <div className="flex justify-between items-center gap-2">
           <p className="md:text-xs text-dove-gray">
             Amount
           </p>
-          <PublicSaleInput amount={amount} setAmount={setAmount} sellingTier={sellingTier} />
+          <PublicSaleInput amount={amount} setAmount={setAmount} />
         </div>
         <div className="flex justify-between items-center gap-2">
           <p className="md:text-xs text-dove-gray">
             Pay
           </p>
-          <p className="text-xl md:text-sm leading-none font-semibold">
-            {new Intl.NumberFormat().format(sellingTier.price * Math.min(amount, sellingTier.available))} FUSE
-          </p>
+          {!isClient || isCurrentTierDetailLoading ?
+            <span className="w-20 h-6 md:h-5 rounded-md animate-pulse bg-white"></span> :
+            <p className="text-xl md:text-sm leading-none font-semibold">
+              {new Intl.NumberFormat().format(currentTierDetail.price * Math.min(amount, currentTierDetail.availableSupply))} FUSE
+            </p>
+          }
         </div>
       </div>
       <PublicSaleButton />
@@ -59,7 +75,9 @@ export default function PublicSaleForm({ sellingTier }: PublicSaleFormProps) {
   )
 }
 
-const PublicSaleInput = ({ amount, setAmount, sellingTier }: PublicSaleInputProps) => {
+const PublicSaleInput = ({ amount, setAmount }: PublicSaleInputProps) => {
+  const { currentTierDetail } = useAppSelector(selectUserSlice);
+
   return (
     <div className="flex justify-between items-center gap-4 bg-white rounded-[0.625rem] px-3 py-2 text-xl leading-none font-semibold">
       <button
@@ -73,14 +91,14 @@ const PublicSaleInput = ({ amount, setAmount, sellingTier }: PublicSaleInputProp
         name="public-sale-amount"
         id="public-sale-amount"
         min={1}
-        max={sellingTier.available}
+        max={currentTierDetail.availableSupply}
         value={amount}
         onChange={(e) => setAmount(parseInt(e.target.value))}
         className="public-sale-amount outline-none flex items-center text-xl md:text-sm leading-none"
       />
       <button
         type="button"
-        onClick={() => setAmount((amount: number) => amount < sellingTier.available ? amount + 1 : amount)}
+        onClick={() => setAmount((amount: number) => amount < currentTierDetail.availableSupply ? amount + 1 : amount)}
       >
         +
       </button>
@@ -90,6 +108,7 @@ const PublicSaleInput = ({ amount, setAmount, sellingTier }: PublicSaleInputProp
 
 const PublicSaleButton = () => {
   const { isConnected } = useAccount();
+  const { isClient, isMinting } = useAppSelector(selectUserSlice);
 
   return (
     <div className="mt-auto md:mt-16">
@@ -99,6 +118,9 @@ const PublicSaleButton = () => {
           className="transition ease-in-out w-full p-4 md:py-2.5 flex justify-center items-center gap-2 bg-black rounded-full text-xl md:text-sm leading-none text-white font-semibold hover:bg-success hover:text-black"
         >
           Buy
+          {!isClient || isMinting &&
+            <Spinner />
+          }
         </button> :
         <ConnectWallet className="transition ease-in-out hover:bg-success hover:text-black hover:border-success w-full text-xl md:text-sm leading-none py-4 md:py-2.5" />
       }

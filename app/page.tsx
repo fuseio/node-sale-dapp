@@ -1,6 +1,6 @@
+"use client";
 import PublicSaleForm from "@/components/PublicSaleForm";
 import Topbar from "@/components/Topbar";
-import { Tier, TierStatus } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
 import ember from "@/assets/ember.svg";
@@ -8,38 +8,10 @@ import checkmarkBg from "@/assets/checkmark-bg.svg";
 import Footer from "@/components/Footer";
 import List from "@/components/List";
 import FAQ from "@/components/FAQ";
-
-const tiers: Tier[] = [
-  {
-    id: 1,
-    status: TierStatus.SoldOut,
-    price: 250000,
-  },
-  {
-    id: 2,
-    status: TierStatus.Selling,
-    price: 250000,
-    total: 50,
-    available: 5
-  },
-  {
-    id: 3,
-    status: TierStatus.SoldOut,
-    price: 250000
-  },
-  {
-    id: 4,
-    status: TierStatus.SoldOut,
-    price: 250000
-  },
-  {
-    id: 5,
-    status: TierStatus.SoldOut,
-    price: 250000
-  },
-]
-
-const sellingTier = tiers.filter((tier) => tier.status === TierStatus.Selling)[0];
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { tokenBought, retrieveCurrentTierDetail, retrieveTierDetails, retrieveTotalSupply, selectUserSlice, setIsClient } from "@/store/userSlice";
+import { useEffect } from "react";
+import { useAccount } from "wagmi";
 
 const whys = [
   "A step in the evolution of Fuse Network towards launching the new Ember mainnet"
@@ -89,6 +61,26 @@ const answers = [
 ]
 
 export default function Home() {
+  const dispatch = useAppDispatch();
+  const { isClient, isTotalSupplyLoading, totalSupply, isCurrentTierDetailLoading, currentTierDetail, isTierDetailsLoading, tierDetails, isBoughtLoading, bought, isMinted } = useAppSelector(selectUserSlice);
+  const { address } = useAccount();
+
+  useEffect(() => {
+    dispatch(setIsClient(true));
+  }, [dispatch])
+
+  useEffect(() => {
+    dispatch(retrieveTotalSupply());
+    dispatch(retrieveCurrentTierDetail());
+    dispatch(retrieveTierDetails());
+  }, [isMinted, dispatch])
+
+  useEffect(() => {
+    if (address) {
+      dispatch(tokenBought({ address }));
+    }
+  }, [address, isMinted, dispatch])
+
   return (
     <div className="w-full font-mona min-h-screen">
       <Topbar />
@@ -119,21 +111,27 @@ export default function Home() {
                   Sale in Progress
                 </h2>
                 <div className="flex md:flex-col gap-40 md:gap-6">
-                  <div className="flex flex-col">
+                  <div className="flex flex-col md:items-center">
                     <p>
                       Sold licenses
                     </p>
-                    <p className="text-6xl md:text-[2.813rem] leading-none font-semibold">
-                      35
-                    </p>
+                    {!isClient || isTotalSupplyLoading ?
+                      <span className="w-20 h-16 md:h-12 rounded-md animate-pulse bg-white/20"></span> :
+                      <p className="text-6xl md:text-[2.813rem] leading-none font-semibold">
+                        {totalSupply}
+                      </p>
+                    }
                   </div>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col md:items-center">
                     <p>
                       Current license price
                     </p>
-                    <p className="text-6xl md:text-[2.813rem] leading-none font-semibold">
-                      {new Intl.NumberFormat().format(sellingTier.price)} FUSE
-                    </p>
+                    {!isClient || isCurrentTierDetailLoading ?
+                      <span className="w-40 h-16 md:h-12 rounded-md animate-pulse bg-white/20"></span> :
+                      <p className="text-6xl md:text-[2.813rem] leading-none font-semibold">
+                        {new Intl.NumberFormat().format(currentTierDetail.price)} FUSE
+                      </p>
+                    }
                   </div>
                 </div>
               </div>
@@ -191,60 +189,70 @@ export default function Home() {
                     Tiers
                   </p>
                   <div className="flex flex-col gap-2.5 md:gap-1.5 md:text-xs">
-                    {tiers.map((tier) => (
-                      <div
-                        key={tier.id}
-                        className="flex flex-col gap-8 bg-white rounded-[0.625rem] px-4 py-5 md:px-3 md:py-4"
-                      >
-                        <div className="flex justify-between gap-2">
-                          <div className="flex gap-4 md:gap-3">
-                            <p className="font-semibold">
-                              Tier {tier.id}
-                            </p>
-                            <p className={`${tier.status === "Selling" ? "text-fresh-green" : "text-black"}`}>
-                              {tier.status}
-                            </p>
-                          </div>
-                          <div className="flex gap-2">
-                            <p>
-                              Price per license
-                            </p>
-                            <p className="font-semibold">
-                              {new Intl.NumberFormat().format(tier.price)} FUSE
-                            </p>
-                          </div>
-                        </div>
-                        {tier.status === "Selling" && (
-                          <div className="flex justify-between items-center gap-5 md:gap-3">
-                            <div className="bg-tertiary rounded-[0.625rem] w-full h-2">
-                              <div
-                                className="bg-light-teal rounded-[0.625rem] h-full"
-                                style={{
-                                  width: `${((tier.total - tier.available) / tier.total) * 100}%`
-                                }}
-                              ></div>
+                    {!isClient || isTierDetailsLoading ?
+                      new Array(5).fill(0).map((_, i) => (
+                        <span key={i} className={`w-full ${i === 0 ? "h-32 md:h-32" : "h-16 md:h-12"} rounded-[0.625rem] animate-pulse bg-white`}></span>
+                      )) :
+                      tierDetails.map((tierDetail) => (
+                        <div
+                          key={tierDetail.tier}
+                          className="flex flex-col gap-8 bg-white rounded-[0.625rem] px-4 py-5 md:px-3 md:py-4"
+                        >
+                          <div className="flex justify-between gap-2">
+                            <div className="flex gap-4 md:gap-3">
+                              <p className="font-semibold">
+                                Tier {tierDetail.tier}
+                              </p>
+                              <p className={`${tierDetail.tier === currentTierDetail.tier ? "text-fresh-green" : "text-black"}`}>
+                                {tierDetail.tier === currentTierDetail.tier ? "Selling" : "Sold out"}
+                              </p>
                             </div>
-                            <p>
-                              <span className="text-fresh-green">
-                                {tier.total - tier.available}
-                              </span>
-                              /{tier.total}
-                            </p>
+                            <div className="flex gap-2">
+                              <p>
+                                Price per license
+                              </p>
+                              <p className="font-semibold">
+                                {new Intl.NumberFormat().format(tierDetail.price)} FUSE
+                              </p>
+                            </div>
                           </div>
-                        )}
-                      </div>
-                    ))}
+                          {tierDetail.tier === currentTierDetail.tier && (
+                            <div className="flex justify-between items-center gap-5 md:gap-3">
+                              <div className="bg-tertiary rounded-[0.625rem] w-full h-2">
+                                <div
+                                  className="bg-light-teal rounded-[0.625rem] h-full"
+                                  style={{
+                                    width: `${((tierDetail.maxSupply - tierDetail.availableSupply) / tierDetail.maxSupply) * 100}%`
+                                  }}
+                                ></div>
+                              </div>
+                              <p>
+                                <span className="text-fresh-green">
+                                  {tierDetail.maxSupply - tierDetail.availableSupply}
+                                </span>
+                                /{tierDetail.maxSupply}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      ))}
                   </div>
                 </div>
-                <PublicSaleForm sellingTier={sellingTier} />
+                <PublicSaleForm />
               </div>
               <div className="flex flex-col gap-10 md:gap-5 w-full bg-tertiary rounded-[1.25rem] p-10 md:p-6">
                 <p className="text-2xl md:text-lg font-semibold">
                   My licenses
                 </p>
-                <p className="text-lg text-dove-gray md:text-sm">
-                  Congratulations! You have 2 licenses, and can launch 2 Data Availability nodes when Ember L2 goes live. Stay tuned!
-                </p>
+                {!isClient || isBoughtLoading ?
+                  <span className="w-full h-7 md:h-12 rounded-md animate-pulse bg-white"></span> :
+                  <p className="text-lg text-dove-gray md:text-sm">
+                    {bought ?
+                      `Congratulations! You have ${bought} licenses, and can launch 2 Data Availability nodes when Ember L2 goes live. Stay tuned!` :
+                      "You have not purchased a license."
+                    }
+                  </p>
+                }
               </div>
             </div>
           </div>

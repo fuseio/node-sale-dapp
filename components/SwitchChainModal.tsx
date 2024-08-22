@@ -3,16 +3,16 @@ import React, { useEffect, useState } from "react";
 import close from "@/assets/close.svg";
 import fuseGray from "@/assets/fuse-gray.svg";
 import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
-import { fuse } from "viem/chains";
 import Image from "next/image";
 import { resetConnection } from "@/lib/web3Auth";
+import { CONFIG } from "@/lib/config";
 
 type ChainModalProps = {
   description?: string;
 }
 
 const SwitchChainModal = ({
-  description = "Please switch to the Fuse Network to continue"
+  description = `Please switch to the ${CONFIG.chain.name} Network to continue`
 }: ChainModalProps): JSX.Element => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { switchChain } = useSwitchChain()
@@ -26,7 +26,8 @@ const SwitchChainModal = ({
   });
 
   useEffect(() => {
-    if (isConnected && chain?.id !== fuse.id) setIsOpen(true);
+    if (isConnected && chain?.id !== CONFIG.chain.id)
+      setIsOpen(true);
     else setIsOpen(false);
   }, [chain, isConnected]);
 
@@ -68,10 +69,10 @@ const SwitchChainModal = ({
             <button
               className="transition ease-in-out w-full bg-success text-lg font-bold text-black rounded-xl mt-[31.7px] mb-2.5 py-3.5 hover:bg-black hover:text-white"
               onClick={() => {
-                switchChain({ chainId: fuse.id });
+                switchChain({ chainId: CONFIG.chain.id });
               }}
             >
-              Switch to Fuse chain
+              Switch to {CONFIG.chain.name} chain
             </button>
             <button
               className="transition ease-in-out w-full bg-dune text-lg font-bold text-white rounded-xl py-3.5 hover:bg-[#FFEBE9] hover:text-[#FD0F0F]"
