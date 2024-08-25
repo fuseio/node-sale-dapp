@@ -1,4 +1,3 @@
-"use client";
 import IframeResizer from "@iframe-resizer/react";
 
 const Footer = () => {

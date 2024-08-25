@@ -15,12 +15,12 @@ export async function GET(
     return `${n}${suffix}`;
   };
 
-  const id = params.id + 1;
+  const id = parseInt(params.id) + 1;
 
   return Response.json({
-    "description": `${formatOrdinals(parseInt(id))} tier of Fuse Node Sale`,
+    "description": `${formatOrdinals(id)} tier of Fuse Node Sale`,
     "external_url": "https://node-sale.fuse.io",
     "image": `https://storage.googleapis.com/opensea-prod.appspot.com/puffs/${id}.png`,
-    "name": `${formatOrdinals(parseInt(id))} tier`,
+    "name": `${formatOrdinals(id)} tier`,
   })
 }
