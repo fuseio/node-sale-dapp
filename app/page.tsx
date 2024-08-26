@@ -14,7 +14,9 @@ import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
 const whys = [
-  "A step in the evolution of Fuse Network towards launching the new Ember mainnet"
+  "A step in the evolution of Fuse Network towards the new Fuse Ember layer-2 mainnet",
+  "A transition from a 5-year old L1 decentralized ecosystem to a modular, open source L2",
+  "An upgrade to a deflationary token model and more stable economy"
 ]
 
 const advantages = [
@@ -145,7 +147,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <List id="about" title="What is Node Sale?" items={whys} />
+        <List id="about" title="What is a Bootstrap event?" items={whys} />
         <section className="bg-tertiary">
           <div className="px-10 py-24 md:px-4 md:py-12">
             <div className="w-full max-w-7xl m-auto flex flex-col justify-between gap-16 md:gap-10">
@@ -204,7 +206,11 @@ export default function Home() {
                                 Tier {tierDetail.tier}
                               </p>
                               <p className={`${tierDetail.tier === currentTierDetail.tier ? "text-fresh-green" : "text-black"}`}>
-                                {tierDetail.tier === currentTierDetail.tier ? "Selling" : "Sold out"}
+                                {tierDetail.tier === currentTierDetail.tier ?
+                                  "Selling" :
+                                  tierDetail.tier > currentTierDetail.tier ?
+                                    "Not started" :
+                                    "Sold out"}
                               </p>
                             </div>
                             <div className="flex gap-2">
@@ -216,11 +222,11 @@ export default function Home() {
                               </p>
                             </div>
                           </div>
-                          {tierDetail.tier === currentTierDetail.tier && (
+                          {tierDetail.tier <= currentTierDetail.tier && (
                             <div className="flex justify-between items-center gap-5 md:gap-3">
                               <div className="bg-tertiary rounded-[0.625rem] w-full h-2">
                                 <div
-                                  className="bg-light-teal rounded-[0.625rem] h-full"
+                                  className="transition-[width] ease-in-out duration-300 bg-light-teal rounded-[0.625rem] h-full"
                                   style={{
                                     width: `${((tierDetail.maxSupply - tierDetail.availableSupply) / tierDetail.maxSupply) * 100}%`
                                   }}
@@ -249,7 +255,7 @@ export default function Home() {
                   <p className="text-lg text-dove-gray md:text-sm">
                     {isConnected ?
                       bought ?
-                        `Congratulations! You have ${bought} licenses, and can launch 2 Data Availability nodes when Ember L2 goes live. Stay tuned!` :
+                        `Congratulations! You have ${bought} licenses, and can launch ${bought} Data Availability nodes when Ember L2 goes live. Stay tuned!` :
                         "You have not purchased a license." :
                       "Connect Wallet to view your purchased licenses."
                     }
