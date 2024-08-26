@@ -255,7 +255,7 @@ export default function Home() {
                   <p className="text-lg text-dove-gray md:text-sm">
                     {isConnected ?
                       bought ?
-                        `Congratulations! You have ${bought} licenses, and can launch ${bought} Data Availability nodes when Ember L2 goes live. Stay tuned!` :
+                        `Congratulations! You have ${bought} ${bought > 1 ? "licenses" : "license"}, and can launch ${bought} Data Availability ${bought > 1 ? "nodes" : "node"} when Ember L2 goes live. Stay tuned!` :
                         "You have not purchased a license." :
                       "Connect Wallet to view your purchased licenses."
                     }
