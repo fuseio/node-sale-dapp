@@ -12,7 +12,7 @@ const List = ({ id, title, items }: ListProps) => {
     <section id={id}>
       <div className="px-10 py-24 md:px-4 md:py-12">
         <div className="w-full max-w-7xl m-auto flex md:flex-col justify-between gap-14 md:gap-10">
-          <h2 className="text-[2.5rem] md:text-[2rem] font-semibold max-w-80">
+          <h2 className="text-[2.5rem] md:text-[2rem] font-semibold max-w-[20.625rem]">
             {title}
           </h2>
           <div className="flex flex-col gap-6 md:gap-4">
