@@ -32,13 +32,6 @@ const benefits = [
   "NFT ownership democratizes the network, allowing for individual ownership, operation, and profit-making from nodes"
 ]
 
-const advantages = [
-  "Node Rewards - 20% of token supply Rewards is distributed over the frst 24 months after mainnet launch",
-  "Node owners get access to the Data Availability Committee",
-  "Participate in governance",
-  "Node ownership ofers potential additional airdrops"
-]
-
 const conditions = [
   {
     title: "Join whitelist to get early access at the best price"
@@ -209,7 +202,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <List id="advantages" title="Advantages of Owning Fuse Network Nodes" items={advantages} />
         <FAQ questions={questions} answers={answers} />
       </main>
       <Footer />
