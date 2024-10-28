@@ -1,14 +1,24 @@
 "use client";
-import Topbar from "@/components/Topbar";
+
 import Image from "next/image";
 import Link from "next/link";
-import ember from "@/assets/ember.svg";
-import checkmarkBg from "@/assets/checkmark-bg.svg";
+
+import Topbar from "@/components/Topbar";
+import { useFormState } from 'react-dom'
+import { joinWaitlist } from '@/app/actions'
+
 import Footer from "@/components/Footer";
 import List from "@/components/List";
 import FAQ from "@/components/FAQ";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { selectUserSlice } from "@/store/userSlice";
+import JoinWaitlistButton from "@/components/JoinWaitlistButton";
+
+import ember from "@/assets/ember.svg";
+import checkmarkBg from "@/assets/checkmark-bg.svg";
+import polygon from "@/assets/polygon.png";
+import nodeops from "@/assets/nodeops.png";
+import gatewayFm from "@/assets/gateway-fm.png";
+import layerzero from "@/assets/layerzero.png";
+import theGraph from "@/assets/the-graph.png";
 
 const benefits = [
   "Fuse Foundation incentive - Get rewarded for maintaining an active node monthly for 3 years. Fuse Foundation allocates 10,000,000 FUSE to rewards.",
@@ -31,17 +41,13 @@ const advantages = [
 
 const conditions = [
   {
-    title: "Early birds get the best price",
-    points: [
-      "5 tiers",
-      "Star price - 120,00 FUSE"
-    ]
+    title: "Join whitelist to get early access at the best price"
   },
   {
-    title: "Nodes for sale at 500—exclusive to licensed operators."
+    title: "Get 10% discount when paying with FUSE token"
   },
   {
-    title: "FUSE tokens from sale will be burned"
+    title: "Earn Node Sale bootstrap reward monthly for 3 years"
   }
 ]
 
@@ -100,8 +106,8 @@ const answers = [
 ]
 
 export default function Home() {
-  const dispatch = useAppDispatch();
-  const { isJoinWaitlistLoading, joinedWaitlist } = useAppSelector(selectUserSlice);
+  const initialState = { type: 'idle' }
+  const [state, formAction] = useFormState(joinWaitlist, initialState)
 
   return (
     <div className="w-full font-mona min-h-screen">
@@ -110,8 +116,8 @@ export default function Home() {
         <section className="mt-24 md:mt-0">
           <div className="px-10 py-24 md:px-4 md:py-12">
             <div className="w-full max-w-7xl m-auto flex flex-col items-center gap-8 text-center">
-              <h1 className="text-[4.375rem] md:text-5xl leading-none font-semibold max-w-[35rem]">
-                Fuse Node Sale is Now Live!
+              <h1 className="text-[4.375rem] md:text-5xl leading-none font-semibold max-w-[45rem]">
+                Join the Fuse Ember Node Sale
               </h1>
               <p className="text-xl md:text-lg text-ironside-gray max-w-[45rem]">
                 {"Your ticket to earning rewards and being part of a cutting-edge decentralized payment network that's set to change the game."}
@@ -122,6 +128,16 @@ export default function Home() {
               >
                 Join the Waiting list
               </Link>
+              <p>
+                <span className="text-fresh-green">Trusted by</span> Industry Leaders:
+              </p>
+              <div className="flex items-center flex-wrap gap-5">
+                <Image src={polygon} alt="Polygon" width={100} height={20} />
+                <Image src={gatewayFm} alt="Gateway FM" width={100} height={20} />
+                <Image src={nodeops} alt="NodeOps" width={100} height={20} />
+                <Image src={layerzero} alt="LayerZero" width={100} height={20} />
+                <Image src={theGraph} alt="The Graph" width={100} height={20} />
+              </div>
             </div>
           </div>
         </section>
@@ -144,6 +160,32 @@ export default function Home() {
           </div>
         </section>
         <List id="about" title="Node ownership benefits" items={benefits} />
+        <section className="md:bg-dune md:my-12" id="waitlist">
+          <div className="px-10 py-24 md:px-4 md:py-0">
+            <div className="w-full max-w-7xl m-auto flex flex-col items-center text-center gap-10">
+              <h2 className="text-[2.5rem] md:text-[2rem] font-semibold leading-none">
+                Join Waiting list
+              </h2>
+              {state.type === 'success' ? (
+                <p className="text-xl md:text-lg text-fresh-green">Thanks for joining the waitlist!</p>
+              ) : (
+                <form
+                  action={formAction}
+                  className="flex gap-4"
+                >
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    className="px-4 py-3 bg-transparent border border-light-gray rounded-full text-xl md:text-lg leading-none text-black font-semibold"
+                    required
+                  />
+                  <JoinWaitlistButton />
+                </form>
+              )}
+            </div>
+          </div>
+        </section>
         <section className="bg-tertiary">
           <div className="px-10 py-24 md:px-4 md:py-12">
             <div className="w-full max-w-7xl m-auto flex flex-col justify-between gap-16 md:gap-10">
@@ -161,13 +203,6 @@ export default function Home() {
                     <p className="text-2xl md:text-sm">
                       {condition.title}
                     </p>
-                    <ul className="list-disc list-inside text-ironside-gray md:text-xs">
-                      {condition.points?.map((point, i) => (
-                        <li key={i}>
-                          {point}
-                        </li>
-                      ))}
-                    </ul>
                   </div>
                 ))}
               </div>
