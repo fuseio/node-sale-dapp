@@ -20,7 +20,7 @@ const why = [
     description: "Imagine being part of a network where you can earn just by holding a node. Here's what's in it for you:"
   },
   {
-    description: "15% of token supply Rewards reserved exclusively for node operators like you.",
+    description: "15 000 000 FUSE tokens reward reserved exclusively for node operators like you.",
     isCheckmark: true
   },
   {
@@ -122,12 +122,6 @@ export default function Home() {
               <p className="text-xl md:text-lg text-ironside-gray max-w-[45rem]">
                 {"Your ticket to earning rewards and being part of a cutting-edge decentralized payment network that's set to change the game."}
               </p>
-              <Link
-                href="#waitlist"
-                className="transition ease-in-out px-5 py-4 md:px-4 md:py-3 flex justify-center items-center gap-2 bg-success border border-success rounded-full text-xl md:text-lg leading-none text-black font-semibold hover:bg-transparent hover:border-black"
-              >
-                Join the Waiting list
-              </Link>
           </div>
           </div>
         </section>
