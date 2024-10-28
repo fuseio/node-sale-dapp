@@ -58,20 +58,42 @@ const questions = [
 ]
 
 const answers = [
-  `The process will consist of 3 stages: 
-    1. Whitelist application: users can register for whitelist to get priority access. Whitelisting will start in November 2024. Leave your email to be notified.
-    2. Whitelist Sale: only whitelisted users can participate in the sale. Nodes are sold on first come, first served basis. 
-    3. Public Sale: the sale is open to all users.
-  `,
+  () => (
+    <div>
+      The process will consist of 3 stages:
+      <ol className="list-decimal list-inside">
+        <li>
+          Whitelist application: users can register for whitelist to get priority access. Whitelisting will start in November 2024. Leave your email to be notified.
+        </li>
+        <li>
+          Whitelist Sale: only whitelisted users can participate in the sale. Nodes are sold on first come, first served basis.
+        </li>
+        <li>
+          Public Sale: the sale is open to all users.
+        </li>
+      </ol>
+    </div>
+  ),
   "This is a list of wallets that have expressed their desire to buy a node before the sale starts. These participants will receive priority access to buy the node before the public sale starts.",
   "A whitelisting form will be published on this page in November 2024. Leave your email to be notified.",
   "No. The priority sale of nodes to whitelisted participants will be on a first come, first served basis.If all nodes allocated to whitelisted users are sold out, you will be able to participate in the public sale. Leave your email to be notified.",
   "A total of 50,000 nodes will be available for purchase in the Fuse Ember network.",
-  `Active node operators will receive several types of rewards:
-    - Fuse Foundation node sale bootstrap reward distributed monthly for 3 years
-    - Share of the Fuse Foundation revenue from sequencer fees, new staking DApp, etc.
-    - Delegation fees from node delegators
-  `,
+  () => (
+    <div>
+      Active node operators will receive several types of rewards:
+      <ol className="list-disc list-inside">
+        <li>
+          Fuse Foundation node sale bootstrap reward distributed monthly for 3 years
+        </li>
+        <li>
+          Share of the Fuse Foundation revenue from sequencer fees, new staking DApp, etc.
+        </li>
+        <li>
+          Delegation fees from node delegators
+        </li>
+      </ol>
+    </div>
+  ),
   "Yes, each participant can buy any number of nodes.",
   "The node license is an NFT. NFTs will be sent to the buyer's wallet immediately after the license is paid.",
   "Running and managing nodes on the Fuse Ember network will be done through the NodeOps console."
@@ -92,11 +114,11 @@ export default function Home() {
                 Fuse Node Sale is Now Live!
               </h1>
               <p className="text-xl md:text-lg text-ironside-gray max-w-[45rem]">
-                Your ticket to earning rewards and being part of a cutting-edge decentralized payment network that’s set to change the game.
+                {"Your ticket to earning rewards and being part of a cutting-edge decentralized payment network that's set to change the game."}
               </p>
               <Link
                 href="#waitlist"
-                className="transition ease-in-out min-w-[14.625rem] md:w-full p-4 md:p-3 flex justify-center items-center gap-2 bg-success border border-success rounded-full text-xl md:text-lg leading-none text-black font-semibold hover:bg-transparent hover:border-black"
+                className="transition ease-in-out px-5 py-4 md:px-4 md:py-3 flex justify-center items-center gap-2 bg-success border border-success rounded-full text-xl md:text-lg leading-none text-black font-semibold hover:bg-transparent hover:border-black"
               >
                 Join the Waiting list
               </Link>

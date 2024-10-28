@@ -12,7 +12,7 @@ const NavButton = ({ isOpen, setOpen }: NavButtonProps) => {
     <div className="flex order-2 min-w-[150px] lg:w-[93%] justify-end items-center">
       <Link
         href="#waitlist"
-        className="transition ease-in-out min-w-[14.625rem] md:w-full p-4 md:p-3 flex justify-center items-center gap-2 bg-success border border-success rounded-full text-xl md:text-lg leading-none text-black font-semibold hover:bg-transparent hover:border-black"
+        className="transition ease-in-out bg-black text-white px-5 py-2 rounded-full font-medium hover:bg-success hover:text-black hover:border-success"
       >
         Join Waitlist
       </Link>

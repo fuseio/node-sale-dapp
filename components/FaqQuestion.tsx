@@ -4,7 +4,7 @@ import PlusToMinus from "./ui/PlusToMinus";
 
 type FaqQuestionProps = {
   question: string;
-  answer: string;
+  answer: string | (() => JSX.Element);
 };
 
 const FaqQuestion = ({
@@ -65,7 +65,12 @@ const FaqQuestion = ({
                 },
               }}
             >
-              <p className="text-text-dark-gray font-normal text-base leading-[22.4px] mt-3.5 md:text-sm">{answer}</p>
+              <div className="text-text-dark-gray font-normal text-base mt-3.5 md:text-sm">
+                {typeof answer === 'function' ?
+                  answer() :
+                  <p>{answer}</p>
+                }
+              </div>
             </motion.span>
           )}
         </AnimatePresence>

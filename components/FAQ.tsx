@@ -2,7 +2,7 @@ import FaqQuestion from "./FaqQuestion";
 
 type FAQProps = {
   questions: string[];
-  answers: string[];
+  answers: (string | (() => JSX.Element))[];
 };
 
 const FAQ = ({ questions, answers }: FAQProps) => {
