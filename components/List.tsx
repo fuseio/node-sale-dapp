@@ -1,10 +1,11 @@
 import Image from "next/image";
 import checkmarkBg from "@/assets/checkmark-bg.svg";
+import { ListItem } from "@/lib/types";
 
 type ListProps = {
   id: string;
   title: string;
-  items: string[];
+  items: ListItem[];
 }
 
 const List = ({ id, title, items }: ListProps) => {
@@ -18,12 +19,14 @@ const List = ({ id, title, items }: ListProps) => {
           <div className="flex flex-col gap-6 md:gap-4">
             {items.map((item, i) => (
               <div key={i} className="flex items-start gap-3 md:gap-2.5">
-                <Image
-                  src={checkmarkBg}
-                  alt="checkmark background"
-                />
+                {item.isCheckmark &&
+                  <Image
+                    src={checkmarkBg}
+                    alt="checkmark background"
+                  />
+                }
                 <p className="text-2xl md:text-base max-w-[45rem]">
-                  {item}
+                  {item.description}
                 </p>
               </div>
             ))}

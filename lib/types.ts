@@ -1,5 +1,3 @@
-import { Address, Chain } from "viem";
-
 export type MenuItem = {
   title: string;
   link: string;
@@ -8,18 +6,7 @@ export type MenuItem = {
 
 export type MenuItems = MenuItem[];
 
-export type WalletType = {
-  [k: string]: string;
-}
-
-export type Config = {
-  nodeSaleAddress: Address;
-  chain: Chain;
-}
-
-export type TierDetail = {
-  tier: number;
-  price: number;
-  availableSupply: number;
-  maxSupply: number;
+export type ListItem = {
+  description: string;
+  isCheckmark?: boolean;
 }

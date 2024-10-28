@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 import localFont from 'next/font/local'
 import "./globals.css";
 import Providers from "./Providers";
-import { cookieToInitialState } from "wagmi";
-import { headers } from "next/headers";
-import { getConfig } from "@/lib/web3Auth";
 
 const monaSans = localFont({
   src: './MonaSans.woff2',
@@ -22,15 +19,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialState = cookieToInitialState(
-    getConfig(),
-    headers().get('cookie')
-  )
-
   return (
     <html lang="en" className="scroll-smooth">
       <body className={monaSans.variable}>
-        <Providers initialState={initialState}>
+        <Providers>
           {children}
         </Providers>
       </body>
