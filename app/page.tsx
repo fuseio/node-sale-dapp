@@ -14,22 +14,26 @@ import JoinWaitlistButton from "@/components/JoinWaitlistButton";
 
 import ember from "@/assets/ember.svg";
 import checkmarkBg from "@/assets/checkmark-bg.svg";
-import polygon from "@/assets/polygon.png";
-import nodeops from "@/assets/nodeops.png";
-import gatewayFm from "@/assets/gateway-fm.png";
-import layerzero from "@/assets/layerzero.png";
-import theGraph from "@/assets/the-graph.png";
 
-const benefits = [
-  "Fuse Foundation incentive - Get rewarded for maintaining an active node monthly for 3 years. Fuse Foundation allocates 10,000,000 FUSE to rewards.",
-  "External incentive - Share of the Fuse Foundation revenue from sequencer fees, new staking DApp, etc. will be distributed across active node operators.",
-  "Delegation fees from node delegators - Node operator receives 10% of the total earnings of the license delegator.",
-  "Ongoing node rewards",
-  "Node ownership offers potential additional airdrops",
-  "Users gain governance rights, contributing to network decisions",
-  "Owning a Node License NFT provides proof of ownership",
-  "NFTs can be traded or sold on secondary markets",
-  "NFT ownership democratizes the network, allowing for individual ownership, operation, and profit-making from nodes"
+const why = [
+  {
+    description: "Imagine being part of a network where you can earn just by holding a node. Here's what's in it for you:"
+  },
+  {
+    description: "15% of token supply Rewards reserved exclusively for node operators like you.",
+    isCheckmark: true
+  },
+  {
+    description: "40% Revenue Share: Every time a transaction happens on the network, you'll get a slice of the revenue—40% of it, to be exact!",
+    isCheckmark: true
+  },
+  {
+    description: "External revenue: Node operators help govern the network and get extra yield. Every user that stakes any RWA or LST asset for yield. Node operators get a slice!",
+    isCheckmark: true
+  },
+  {
+    description: "With 50,000 nodes available in 20 different tiers, the sooner you get in, the better the deal. Prices will go up as each tier fills, so don't wait too long to make your move!"
+  }
 ]
 
 const conditions = [
@@ -90,6 +94,9 @@ const answers = [
         <li>
           Delegation fees from node delegators
         </li>
+        <li>
+          Node ownership offers potential additional airdrops
+        </li>
       </ol>
     </div>
   ),
@@ -121,17 +128,7 @@ export default function Home() {
               >
                 Join the Waiting list
               </Link>
-              <p>
-                <span className="text-fresh-green">Trusted by</span> Industry Leaders:
-              </p>
-              <div className="flex items-center flex-wrap gap-5">
-                <Image src={polygon} alt="Polygon" width={100} height={20} />
-                <Image src={gatewayFm} alt="Gateway FM" width={100} height={20} />
-                <Image src={nodeops} alt="NodeOps" width={100} height={20} />
-                <Image src={layerzero} alt="LayerZero" width={100} height={20} />
-                <Image src={theGraph} alt="The Graph" width={100} height={20} />
-              </div>
-            </div>
+          </div>
           </div>
         </section>
         <section className="md:bg-dune md:my-12">
@@ -142,7 +139,7 @@ export default function Home() {
                   Fuse Node Sale
                 </h2>
               </div>
-              <div className="absolute md:static -top-24 right-24">
+              <div className="absolute md:static -top-40 right-24">
                 <Image
                   src={ember}
                   alt="ember"
@@ -152,19 +149,19 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <List id="about" title="Node ownership benefits" items={benefits} />
-        <section className="md:bg-dune md:my-12" id="waitlist">
+        <List id="about" title="Why Should You Get a Fuse Node?" items={why} />
+        <section className="md:my-12" id="waitlist">
           <div className="px-10 py-24 md:px-4 md:py-0">
             <div className="w-full max-w-7xl m-auto flex flex-col items-center text-center gap-10">
               <h2 className="text-[2.5rem] md:text-[2rem] font-semibold leading-none">
-                Join Waiting list
+                See if you qualify to be a Node Operator
               </h2>
               {state.type === 'success' ? (
                 <p className="text-xl md:text-lg text-fresh-green">Thanks for joining the waitlist!</p>
               ) : (
                 <form
                   action={formAction}
-                  className="flex gap-4"
+                  className="flex md:flex-col gap-4"
                 >
                   <input
                     type="email"

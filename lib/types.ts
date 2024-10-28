@@ -5,3 +5,8 @@ export type MenuItem = {
 }
 
 export type MenuItems = MenuItem[];
+
+export type ListItem = {
+  description: string;
+  isCheckmark?: boolean;
+}

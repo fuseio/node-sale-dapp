@@ -11,10 +11,6 @@ const menu: MenuItems = [
     link: "#about",
   },
   {
-    title: "Waitlist",
-    link: "#waitlist",
-  },
-  {
     title: "FAQs",
     link: "#faq",
   },
