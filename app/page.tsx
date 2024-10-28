@@ -131,24 +131,6 @@ export default function Home() {
           </div>
           </div>
         </section>
-        <section className="md:bg-dune md:my-12">
-          <div className="px-10 py-24 md:px-4 md:py-0">
-            <div className="w-full max-w-7xl m-auto relative bg-dune rounded-[1.25rem] flex md:flex-col md:items-center md:text-center md:gap-10 p-16 md:px-5 md:py-10">
-              <div className="flex flex-col gap-16 md:gap-10 text-white">
-                <h2 className="text-[2.5rem] md:text-[2rem] font-semibold leading-none text-success">
-                  Fuse Node Sale
-                </h2>
-              </div>
-              <div className="absolute md:static -top-40 right-24">
-                <Image
-                  src={ember}
-                  alt="ember"
-                  className="md:w-[13.375rem] md:h-[15.625rem]"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
         <List id="about" title="Why Should You Get a Fuse Node?" items={why} />
         <section className="md:my-12" id="waitlist">
           <div className="px-10 py-24 md:px-4 md:py-0">
