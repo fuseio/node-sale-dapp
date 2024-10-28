@@ -1,5 +1,4 @@
 "use client";
-import PublicSaleForm from "@/components/PublicSaleForm";
 import Topbar from "@/components/Topbar";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,14 +8,18 @@ import Footer from "@/components/Footer";
 import List from "@/components/List";
 import FAQ from "@/components/FAQ";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { tokenBought, retrieveCurrentTierDetail, retrieveTierDetails, retrieveTotalSupply, selectUserSlice, setIsClient } from "@/store/userSlice";
-import { useEffect } from "react";
-import { useAccount } from "wagmi";
+import { selectUserSlice } from "@/store/userSlice";
 
-const whys = [
-  "A step in the evolution of Fuse Network towards the new Fuse Ember layer-2 mainnet",
-  "A transition from a 5-year old L1 decentralized ecosystem to a modular, open source L2",
-  "An upgrade to a deflationary token model and more stable economy"
+const benefits = [
+  "Fuse Foundation incentive - Get rewarded for maintaining an active node monthly for 3 years. Fuse Foundation allocates 10,000,000 FUSE to rewards.",
+  "External incentive - Share of the Fuse Foundation revenue from sequencer fees, new staking DApp, etc. will be distributed across active node operators.",
+  "Delegation fees from node delegators - Node operator receives 10% of the total earnings of the license delegator.",
+  "Ongoing node rewards",
+  "Node ownership offers potential additional airdrops",
+  "Users gain governance rights, contributing to network decisions",
+  "Owning a Node License NFT provides proof of ownership",
+  "NFTs can be traded or sold on secondary markets",
+  "NFT ownership democratizes the network, allowing for individual ownership, operation, and profit-making from nodes"
 ]
 
 const advantages = [
@@ -43,45 +46,40 @@ const conditions = [
 ]
 
 const questions = [
-  "What are Fuse Nodes?",
-  "What are Fuse Nodes?",
-  "What are Fuse Nodes?",
-  "What are Fuse Nodes?",
-  "What are Fuse Nodes?",
-  "What are Fuse Nodes?",
-  "What are Fuse Nodes?",
+  "How to purchase a Node License?",
+  "What is whitelist?",
+  "How to get whitelisted?",
+  "Does entering the whitelist guarantee that I can definitely purchase a node?",
+  "How many nodes will be available in total?",
+  "What is the reward for node operator?",
+  "Can I buy multiple nodes?",
+  "How will the node licenses be distributed?",
+  "How to run a node?"
 ]
 
 const answers = [
-  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
-  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
-  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
-  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
-  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
-  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
-  "Fuse Nodes are devices (computers or servers) that run the Fuse blockchain's protocol software and connect to its network. They participate  in the Fuse Network by maintaining a copy of the blockchain ledger, validating transactions, and supporting consensus.",
+  `The process will consist of 3 stages: 
+    1. Whitelist application: users can register for whitelist to get priority access. Whitelisting will start in November 2024. Leave your email to be notified.
+    2. Whitelist Sale: only whitelisted users can participate in the sale. Nodes are sold on first come, first served basis. 
+    3. Public Sale: the sale is open to all users.
+  `,
+  "This is a list of wallets that have expressed their desire to buy a node before the sale starts. These participants will receive priority access to buy the node before the public sale starts.",
+  "A whitelisting form will be published on this page in November 2024. Leave your email to be notified.",
+  "No. The priority sale of nodes to whitelisted participants will be on a first come, first served basis.If all nodes allocated to whitelisted users are sold out, you will be able to participate in the public sale. Leave your email to be notified.",
+  "A total of 50,000 nodes will be available for purchase in the Fuse Ember network.",
+  `Active node operators will receive several types of rewards:
+    - Fuse Foundation node sale bootstrap reward distributed monthly for 3 years
+    - Share of the Fuse Foundation revenue from sequencer fees, new staking DApp, etc.
+    - Delegation fees from node delegators
+  `,
+  "Yes, each participant can buy any number of nodes.",
+  "The node license is an NFT. NFTs will be sent to the buyer's wallet immediately after the license is paid.",
+  "Running and managing nodes on the Fuse Ember network will be done through the NodeOps console."
 ]
 
 export default function Home() {
   const dispatch = useAppDispatch();
-  const { isClient, isTotalSupplyLoading, totalSupply, isCurrentTierDetailLoading, currentTierDetail, isTierDetailsLoading, tierDetails, isBoughtLoading, bought, isMinted } = useAppSelector(selectUserSlice);
-  const { isConnected, address } = useAccount();
-
-  useEffect(() => {
-    dispatch(setIsClient(true));
-  }, [dispatch])
-
-  useEffect(() => {
-    dispatch(retrieveTotalSupply());
-    dispatch(retrieveCurrentTierDetail());
-    dispatch(retrieveTierDetails());
-  }, [isMinted, dispatch])
-
-  useEffect(() => {
-    if (address) {
-      dispatch(tokenBought({ address }));
-    }
-  }, [address, isMinted, dispatch])
+  const { isJoinWaitlistLoading, joinedWaitlist } = useAppSelector(selectUserSlice);
 
   return (
     <div className="w-full font-mona min-h-screen">
@@ -90,17 +88,17 @@ export default function Home() {
         <section className="mt-24 md:mt-0">
           <div className="px-10 py-24 md:px-4 md:py-12">
             <div className="w-full max-w-7xl m-auto flex flex-col items-center gap-8 text-center">
-              <h1 className="text-[4.375rem] md:text-5xl leading-none font-semibold">
-                Fuse L2 Node Sale
+              <h1 className="text-[4.375rem] md:text-5xl leading-none font-semibold max-w-[35rem]">
+                Fuse Node Sale is Now Live!
               </h1>
-              <p className="text-xl md:text-lg leading-none text-ironside-gray">
-                Buy a Fuse Network Node License NFT and Earn FUSE
+              <p className="text-xl md:text-lg text-ironside-gray max-w-[45rem]">
+                Your ticket to earning rewards and being part of a cutting-edge decentralized payment network that’s set to change the game.
               </p>
               <Link
-                href="#public-sale"
+                href="#waitlist"
                 className="transition ease-in-out min-w-[14.625rem] md:w-full p-4 md:p-3 flex justify-center items-center gap-2 bg-success border border-success rounded-full text-xl md:text-lg leading-none text-black font-semibold hover:bg-transparent hover:border-black"
               >
-                Buy Node
+                Join the Waiting list
               </Link>
             </div>
           </div>
@@ -110,32 +108,8 @@ export default function Home() {
             <div className="w-full max-w-7xl m-auto relative bg-dune rounded-[1.25rem] flex md:flex-col md:items-center md:text-center md:gap-10 p-16 md:px-5 md:py-10">
               <div className="flex flex-col gap-16 md:gap-10 text-white">
                 <h2 className="text-[2.5rem] md:text-[2rem] font-semibold leading-none text-success">
-                  Sale in Progress
+                  Fuse Node Sale
                 </h2>
-                <div className="flex md:flex-col gap-40 md:gap-6">
-                  <div className="flex flex-col md:items-center">
-                    <p>
-                      Sold licenses
-                    </p>
-                    {!isMinted && (!isClient || isTotalSupplyLoading) ?
-                      <span className="w-20 h-16 md:h-12 rounded-md animate-pulse bg-white/20"></span> :
-                      <p className="text-6xl md:text-[2.813rem] leading-none font-semibold">
-                        {totalSupply}
-                      </p>
-                    }
-                  </div>
-                  <div className="flex flex-col md:items-center">
-                    <p>
-                      Current license price
-                    </p>
-                    {!isMinted && (!isClient || isCurrentTierDetailLoading) ?
-                      <span className="w-40 h-16 md:h-12 rounded-md animate-pulse bg-white/20"></span> :
-                      <p className="text-6xl md:text-[2.813rem] leading-none font-semibold">
-                        {new Intl.NumberFormat().format(currentTierDetail.price)} FUSE
-                      </p>
-                    }
-                  </div>
-                </div>
               </div>
               <div className="absolute md:static -top-24 right-24">
                 <Image
@@ -147,7 +121,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <List id="about" title="What is a Bootstrap event?" items={whys} />
+        <List id="about" title="Node ownership benefits" items={benefits} />
         <section className="bg-tertiary">
           <div className="px-10 py-24 md:px-4 md:py-12">
             <div className="w-full max-w-7xl m-auto flex flex-col justify-between gap-16 md:gap-10">
@@ -179,92 +153,6 @@ export default function Home() {
           </div>
         </section>
         <List id="advantages" title="Advantages of Owning Fuse Network Nodes" items={advantages} />
-        <section id="public-sale">
-          <div className="px-10 py-24 md:px-4 md:py-12">
-            <div className="w-full max-w-7xl m-auto flex flex-col gap-10">
-              <h2 className="text-[2.5rem] md:text-[2rem] font-semibold text-center">
-                Become a Fuse Network Node Operator
-              </h2>
-              <div className="flex md:flex-col md:flex-col-reverse justify-between gap-10 mt-10">
-                <div className="flex flex-col gap-7 md:gap-4 w-full bg-tertiary rounded-[1.25rem] md:rounded-xl p-10 md:px-4 md:py-5">
-                  <p className="text-2xl md:text-lg font-semibold">
-                    Tiers
-                  </p>
-                  <div className="flex flex-col gap-2.5 md:gap-1.5 md:text-xs">
-                    {!isMinted && (!isClient || isTierDetailsLoading) ?
-                      new Array(5).fill(0).map((_, i) => (
-                        <span key={i} className={`w-full ${i === 0 ? "h-32 md:h-32" : "h-16 md:h-12"} rounded-[0.625rem] animate-pulse bg-white`}></span>
-                      )) :
-                      tierDetails.map((tierDetail) => (
-                        <div
-                          key={tierDetail.tier}
-                          className="flex flex-col gap-8 bg-white rounded-[0.625rem] px-4 py-5 md:px-3 md:py-4"
-                        >
-                          <div className="flex justify-between gap-2">
-                            <div className="flex gap-4 md:gap-3">
-                              <p className="font-semibold">
-                                Tier {tierDetail.tier}
-                              </p>
-                              <p className={`${tierDetail.tier === currentTierDetail.tier ? "text-fresh-green" : "text-black"}`}>
-                                {tierDetail.tier === currentTierDetail.tier ?
-                                  "Selling" :
-                                  tierDetail.tier > currentTierDetail.tier ?
-                                    "Not started" :
-                                    "Sold out"}
-                              </p>
-                            </div>
-                            <div className="flex gap-2">
-                              <p>
-                                Price per license
-                              </p>
-                              <p className="font-semibold">
-                                {new Intl.NumberFormat().format(tierDetail.price)} FUSE
-                              </p>
-                            </div>
-                          </div>
-                          {tierDetail.tier <= currentTierDetail.tier && (
-                            <div className="flex justify-between items-center gap-5 md:gap-3">
-                              <div className="bg-tertiary rounded-[0.625rem] w-full h-2">
-                                <div
-                                  className="transition-[width] ease-in-out duration-300 bg-light-teal rounded-[0.625rem] h-full"
-                                  style={{
-                                    width: `${((tierDetail.maxSupply - tierDetail.availableSupply) / tierDetail.maxSupply) * 100}%`
-                                  }}
-                                ></div>
-                              </div>
-                              <p>
-                                <span className="text-fresh-green">
-                                  {tierDetail.maxSupply - tierDetail.availableSupply}
-                                </span>
-                                /{tierDetail.maxSupply}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                  </div>
-                </div>
-                <PublicSaleForm />
-              </div>
-              <div className="flex flex-col gap-10 md:gap-5 w-full bg-tertiary rounded-[1.25rem] p-10 md:p-6">
-                <p className="text-2xl md:text-lg font-semibold">
-                  My licenses
-                </p>
-                {!isMinted && (!isClient || isBoughtLoading) ?
-                  <span className="w-full h-7 md:h-12 rounded-md animate-pulse bg-white"></span> :
-                  <p className="text-lg text-dove-gray md:text-sm">
-                    {isConnected ?
-                      bought ?
-                        `Congratulations! You have ${bought} ${bought > 1 ? "licenses" : "license"}, and can launch ${bought} Data Availability ${bought > 1 ? "nodes" : "node"} when Ember L2 goes live. Stay tuned!` :
-                        "You have not purchased a license." :
-                      "Connect Wallet to view your purchased licenses."
-                    }
-                  </p>
-                }
-              </div>
-            </div>
-          </div>
-        </section>
         <FAQ questions={questions} answers={answers} />
       </main>
       <Footer />

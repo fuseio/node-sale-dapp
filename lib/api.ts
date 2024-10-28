@@ -1,14 +1,9 @@
 import axios from "axios";
-import { NEXT_PUBLIC_COIN_GECKO_API_KEY } from './config'
+import { NEXT_PUBLIC_GOOGLE_FORM_URL } from "./config";
 
-export const fetchTokenPrice = async (tokenId: string) => {
-  const response = await axios.get(
-    `https://pro-api.coingecko.com/api/v3/simple/price?ids=${tokenId}&vs_currencies=usd`,
-    {
-      headers: {
-        "x-cg-pro-api-key": NEXT_PUBLIC_COIN_GECKO_API_KEY,
-      }
-    }
+export const submitWaitlist = async (email: string) => {
+  const response = await axios.post(
+    NEXT_PUBLIC_GOOGLE_FORM_URL
   );
-  return response.data[`${tokenId}`].usd as number;
+  return response.data;
 };
